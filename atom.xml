@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-07-07T08:47:10.511Z</updated>
+  <updated>2017-07-07T08:55:23.618Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,88 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>redis学习与总结</title>
+    <link href="http://yoursite.com/2017/07/07/redis/"/>
+    <id>http://yoursite.com/2017/07/07/redis/</id>
+    <published>2017-07-07T08:50:48.000Z</published>
+    <updated>2017-07-07T08:55:23.618Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="Redis的基本数据类型"><a href="#Redis的基本数据类型" class="headerlink" title="Redis的基本数据类型"></a>Redis的基本数据类型</h3><blockquote>
+<p>redis中目前支持五种数据类型：</p>
+<ol>
+<li>String </li>
+<li>List </li>
+<li>Hash </li>
+<li>Set</li>
+<li>Sorted Set<h4 id="1-1-String"><a href="#1-1-String" class="headerlink" title="1.1.String"></a>1.1.String</h4><h5 id="1-1-1-结构说明"><a href="#1-1-1-结构说明" class="headerlink" title="1.1.1.结构说明"></a>1.1.1.结构说明</h5>String是简单的key-value键值对。<h5 id="1-1-2基本命令"><a href="#1-1-2基本命令" class="headerlink" title="1.1.2基本命令"></a>1.1.2基本命令</h5>赋值与取值：<br><br>SET key value<br>GET key<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">redis 127.0.0.1:6379&gt; set content hello</div><div class="line">OK</div><div class="line">redis 127.0.0.1:6379&gt; get content</div><div class="line">&quot;hello&quot;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+</blockquote>
+<h5 id="1-1-3-Jedis中操作String"><a href="#1-1-3-Jedis中操作String" class="headerlink" title="1.1.3.Jedis中操作String"></a>1.1.3.Jedis中操作String</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisDemo</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String... args)</span></span>&#123;</div><div class="line">        Jedis jedis = <span class="keyword">new</span> Jedis(<span class="string">"127.0.0.1"</span>,<span class="number">6379</span>);</div><div class="line">        String content = jedis.get(<span class="string">"content"</span>);</div><div class="line">        System.out.println(content);</div><div class="line">        jedis.close();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="1-2-List"><a href="#1-2-List" class="headerlink" title="1.2.List"></a>1.2.List</h4><h5 id="1-2-1-结构说明"><a href="#1-2-1-结构说明" class="headerlink" title="1.2.1.结构说明"></a>1.2.1.结构说明</h5><blockquote>
+<p>redis中的List实现为一个双向链表，类似于java中的LinkedList。支持反向查找和遍历。</p>
+<h5 id="1-2-2基本命令"><a href="#1-2-2基本命令" class="headerlink" title="1.2.2基本命令"></a>1.2.2基本命令</h5><ul>
+<li>BLPOP<br>BLPOP key1 [key2] timeout 取出并获取列表中的第一个元素，或阻塞，直到有可用</li>
+<li>BRPOP<br>BRPOP key1 [key2] timeout 取出并获取列表中的最后一个元素，或阻塞，直到有可用</li>
+<li>LINDEX<br>LINDEX key index 根据一个列表的索引，获取对应位置的元素</li>
+<li>LINSERT<br>LINSERT key BEFORE|AFTER pivot value 在列表中的指定元素之后或之前插入一个元素，若<br>  有重复元素仅对第一个生效。</li>
+<li>LLEN<br>LLEN key 获取列表的长度</li>
+<li>LRANGE<br>LRANGE key start stop 从一个列表中获取各种元素</li>
+<li>LREM<br>LREM key count value 从列表中删除第count个指定value。如果count是0，所有的值为value<br>  的元素都会被删除。如果count是一个负数，则从列表的尾部到头部删除。</li>
+<li>LSET<br>LSET key index value 将列表中指定索引的值更新为value。<h5 id="1-2-3基本命令使用"><a href="#1-2-3基本命令使用" class="headerlink" title="1.2.3基本命令使用"></a>1.2.3基本命令使用</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">redis 127.0.0.1:6379&gt; lpush list1 redis</div><div class="line">(integer) 1</div><div class="line">redis 127.0.0.1:6379&gt; lpush list1 hello</div><div class="line">(integer) 2</div><div class="line">redis 127.0.0.1:6379&gt; rpush list1 world</div><div class="line">(integer) 3</div><div class="line">redis 127.0.0.1:6379&gt; llen list1</div><div class="line">(integer) 3</div><div class="line">redis 127.0.0.1:6379&gt; lrange list1 0 3</div><div class="line">1) &quot;hello&quot;</div><div class="line">2) &quot;redis&quot;</div><div class="line">3) &quot;world&quot;</div><div class="line">redis 127.0.0.1:6379&gt; lpop list1</div><div class="line">&quot;hello&quot;</div><div class="line">redis 127.0.0.1:6379&gt; rpop list1</div><div class="line">&quot;world&quot;</div><div class="line">redis 127.0.0.1:6379&gt; lrange list1 0 3</div><div class="line">1) &quot;redis&quot;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+<h5 id="1-2-4jedis中操作List"><a href="#1-2-4jedis中操作List" class="headerlink" title="1.2.4jedis中操作List"></a>1.2.4jedis中操作List</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">String books[] = &#123;&quot;aaa&quot;,&quot;bbb&quot;,&quot;ccc&quot;,&quot;ddd&quot;,&quot;eee&quot;&#125;;</div><div class="line">jedis.lpush(&quot;books&quot;,books);</div><div class="line">System.out.println(jedis.llen(&quot;books&quot;));</div><div class="line">jedis.lrange(&quot;books&quot;,0,100).forEach(e-&gt;&#123;</div><div class="line">    System.out.println(e);</div><div class="line">&#125;);</div><div class="line">System.out.println(&quot;LINDEX:&quot;+jedis.lindex(&quot;books&quot;,3));</div><div class="line">jedis.linsert(&quot;books&quot;, BinaryClient.LIST_POSITION.AFTER,&quot;aaa&quot;,&quot;xxx&quot;);</div><div class="line">System.out.println(&quot;-----------&quot;);</div><div class="line">jedis.lrange(&quot;books&quot;,0,100).forEach(e-&gt;&#123;</div><div class="line">    System.out.println(e);</div><div class="line">&#125;);</div><div class="line">System.out.println(&quot;-----------&quot;);</div><div class="line"></div><div class="line">jedis.lrem(&quot;books&quot;,0,&quot;ccc&quot;);</div><div class="line"></div><div class="line">jedis.lset(&quot;books&quot;,0,&quot;yy&quot;);</div><div class="line">jedis.lrange(&quot;books&quot;,0,100).forEach(e-&gt;&#123;</div><div class="line">    System.out.println(e);</div><div class="line">&#125;);</div><div class="line">jedis.close();</div></pre></td></tr></table></figure>
+<h4 id="1-3-Hash"><a href="#1-3-Hash" class="headerlink" title="1.3.Hash"></a>1.3.Hash</h4><h5 id="1-3-1结构说明"><a href="#1-3-1结构说明" class="headerlink" title="1.3.1结构说明"></a>1.3.1结构说明</h5><blockquote>
+<p>散列类型存储了字段和字段值的映射，但字段值只能是字符串，不支持其他类型，也就是说，散列类型不能<br>嵌套其他的数据类型。</p>
+<h5 id="1-3-2基本命令使用"><a href="#1-3-2基本命令使用" class="headerlink" title="1.3.2基本命令使用"></a>1.3.2基本命令使用</h5><ul>
+<li>HSET<br>HSET key field value 设置对象指定字段的值</li>
+<li>HGET<br>HGET key field 获取对象中该field属性域的值</li>
+<li>HMSET<br>HMSET key field value [field value …] 同时设置对象中一个或多个字段的值</li>
+<li>HMGET<br>HMGET key field[field…] 获取对象的一个或多个指定字段的值</li>
+<li>HGETALL<br>HGETALL key 获取对象的所有属性域和值</li>
+<li>HDEL<br>HDEL key field[field…] 删除对象的一个或几个属性域，不存在的属性将被忽略<h5 id="1-3-3使用示例"><a href="#1-3-3使用示例" class="headerlink" title="1.3.3使用示例"></a>1.3.3使用示例</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; hset person name jack</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; hset person age 20</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; hset person sex famale</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; hgetall person</div><div class="line">1) &quot;name&quot;</div><div class="line">2) &quot;jack&quot;</div><div class="line">3) &quot;age&quot;</div><div class="line">4) &quot;20&quot;</div><div class="line">5) &quot;sex&quot;</div><div class="line">6) &quot;famale&quot;</div><div class="line">127.0.0.1:6379&gt; hkeys person</div><div class="line">1) &quot;name&quot;</div><div class="line">2) &quot;age&quot;</div><div class="line">3) &quot;sex&quot;</div><div class="line">127.0.0.1:6379&gt; hvals person</div><div class="line">1) &quot;jack&quot;</div><div class="line">2) &quot;20&quot;</div><div class="line">3) &quot;famale&quot;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+<h5 id="1-3-4-Jedis中操作Hash结构"><a href="#1-3-4-Jedis中操作Hash结构" class="headerlink" title="1.3.4.Jedis中操作Hash结构"></a>1.3.4.Jedis中操作Hash结构</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Map&lt;String,String&gt; dataMap = new HashMap&lt;String,String&gt;();</div><div class="line">dataMap.put(&quot;id&quot;,&quot;1001&quot;);</div><div class="line">dataMap.put(&quot;name&quot;,&quot;Lisa&quot;);</div><div class="line">dataMap.put(&quot;age&quot;,&quot;23&quot;);</div><div class="line">jedis.hmset(&quot;user_1001&quot;,dataMap);</div><div class="line">System.out.println(jedis.hget(&quot;user_1001&quot;,&quot;age&quot;));</div><div class="line">dataMap = jedis.hgetAll(&quot;user_1001&quot;);</div><div class="line">System.out.println(dataMap);</div></pre></td></tr></table></figure>
+<h3 id="Redis配置文件"><a href="#Redis配置文件" class="headerlink" title="Redis配置文件"></a>Redis配置文件</h3><blockquote>
+<p>redis默认配置文件为redis.conf,常用配置如下：</p>
+<ol>
+<li>port  服务端口号</li>
+<li>bind  绑定ip，其他的ip不能访问（多个ip用空格隔开）</li>
+<li>databases 数据库数量，默认为16个</li>
+<li>daemonize 设置为守护进程</li>
+<li>maxmemory 最大内存大小</li>
+</ol>
+</blockquote>
+<h3 id="Redis的持久化"><a href="#Redis的持久化" class="headerlink" title="Redis的持久化"></a>Redis的持久化</h3><blockquote>
+<p>Redis支持两种方式的持久化，一种是RDB，一种是AOF。可以单独使用其中一种或者两种结合使用。</p>
+<h4 id="3-1-RDB持久化"><a href="#3-1-RDB持久化" class="headerlink" title="3.1.RDB持久化"></a>3.1.RDB持久化</h4><p>RDB是用过快照完成的，当符合一定条件时，Redis会自动将内存中的所有数据进行快照并且存储到硬盘上。<br>进行快照的条件在配置文件中指定。RDB是Redis默认的持久化方式。<br><br>在配置文件中预置了3个RDB持久化的条件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">save 900 1 #15分钟内有至少一个键被更改则进行快照</div><div class="line">save 300 10 #5分钟内至少有10个键被更改则进行快照</div><div class="line">save 60 100000 #1分钟内至少有10000个键被更改则进行快照</div></pre></td></tr></table></figure></p>
+<p>以上条件之间是或的关系。默认的rdb文件路径是在当前目录，文件名是：dump.rdb，可以在配置文件<br>中修改路径和文件名，分别是dir和dbfilename。注释掉所有的RDB触发条件即可关闭RDB持久化。</p>
+<h4 id="3-2-AOF持久化"><a href="#3-2-AOF持久化" class="headerlink" title="3.2.AOF持久化"></a>3.2.AOF持久化</h4><p>Redis的AOF持久化的原理是将发送到Redis服务端的每一条命令都记录下来，并且保存到硬盘中的AOF文件。<br>AOF文件的位置和RDB文件的位置相同，都是通过dir参数设置。默认的文件名是appendonly.aof，可以通过<br>appendfilename参数修改。AOF持久化默认是不开启的，在配置文件中开启：<br><code>appendonly  yes</code><br></p>
+<h3 id="4-Redis集群"><a href="#4-Redis集群" class="headerlink" title="4.Redis集群"></a>4.Redis集群</h3><p>在Redis3.0及以上版本一大特性就是集群。</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;Redis的基本数据类型&quot;&gt;&lt;a href=&quot;#Redis的基本数据类型&quot; class=&quot;headerlink&quot; title=&quot;Redis的基本数据类型&quot;&gt;&lt;/a&gt;Redis的基本数据类型&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;redis中目前支持五种数据类型：
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yoursite.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="redis" scheme="http://yoursite.com/tags/redis/"/>
+    
+      <category term="nosql" scheme="http://yoursite.com/tags/nosql/"/>
+    
+  </entry>
   
   <entry>
     <title>mysql学习与总结</title>
@@ -216,94 +298,6 @@
     
     
       <category term="随笔" scheme="http://yoursite.com/tags/%E9%9A%8F%E7%AC%94/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>redis学习与总结</title>
-    <link href="http://yoursite.com/2017/07/07/redis/"/>
-    <id>http://yoursite.com/2017/07/07/redis/</id>
-    <published>2017-07-06T16:00:00.000Z</published>
-    <updated>2017-07-07T08:52:39.625Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="Redis的基本数据类型"><a href="#Redis的基本数据类型" class="headerlink" title="Redis的基本数据类型"></a>Redis的基本数据类型</h3><blockquote>
-<p>redis中目前支持五种数据类型：</p>
-<ol>
-<li>String </li>
-<li>List </li>
-<li>Hash </li>
-<li>Set</li>
-<li>Sorted Set<br>####1.1.String<br>#####1.1.1.结构说明<br>String是简单的key-value键值对。<br>#####1.1.2基本命令<br>赋值与取值：<br><br>SET key value<br>GET key<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">redis 127.0.0.1:6379&gt; set content hello</div><div class="line">OK</div><div class="line">redis 127.0.0.1:6379&gt; get content</div><div class="line">&quot;hello&quot;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-</blockquote>
-<p>#####1.1.3.Jedis中操作String<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisDemo</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String... args)</span></span>&#123;</div><div class="line">        Jedis jedis = <span class="keyword">new</span> Jedis(<span class="string">"127.0.0.1"</span>,<span class="number">6379</span>);</div><div class="line">        String content = jedis.get(<span class="string">"content"</span>);</div><div class="line">        System.out.println(content);</div><div class="line">        jedis.close();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>####1.2.List</p>
-<p>#####1.2.1.结构说明</p>
-<blockquote>
-<p>redis中的List实现为一个双向链表，类似于java中的LinkedList。支持反向查找和遍历。</p>
-<p>#####1.2.2基本命令</p>
-<ul>
-<li>BLPOP<br>BLPOP key1 [key2] timeout 取出并获取列表中的第一个元素，或阻塞，直到有可用</li>
-<li>BRPOP<br>BRPOP key1 [key2] timeout 取出并获取列表中的最后一个元素，或阻塞，直到有可用</li>
-<li>LINDEX<br>LINDEX key index 根据一个列表的索引，获取对应位置的元素</li>
-<li>LINSERT<br>LINSERT key BEFORE|AFTER pivot value 在列表中的指定元素之后或之前插入一个元素，若<br>  有重复元素仅对第一个生效。</li>
-<li>LLEN<br>LLEN key 获取列表的长度</li>
-<li>LRANGE<br>LRANGE key start stop 从一个列表中获取各种元素</li>
-<li>LREM<br>LREM key count value 从列表中删除第count个指定value。如果count是0，所有的值为value<br>  的元素都会被删除。如果count是一个负数，则从列表的尾部到头部删除。</li>
-<li>LSET<br>LSET key index value 将列表中指定索引的值更新为value。<br>#####1.2.3基本命令使用<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">redis 127.0.0.1:6379&gt; lpush list1 redis</div><div class="line">(integer) 1</div><div class="line">redis 127.0.0.1:6379&gt; lpush list1 hello</div><div class="line">(integer) 2</div><div class="line">redis 127.0.0.1:6379&gt; rpush list1 world</div><div class="line">(integer) 3</div><div class="line">redis 127.0.0.1:6379&gt; llen list1</div><div class="line">(integer) 3</div><div class="line">redis 127.0.0.1:6379&gt; lrange list1 0 3</div><div class="line">1) &quot;hello&quot;</div><div class="line">2) &quot;redis&quot;</div><div class="line">3) &quot;world&quot;</div><div class="line">redis 127.0.0.1:6379&gt; lpop list1</div><div class="line">&quot;hello&quot;</div><div class="line">redis 127.0.0.1:6379&gt; rpop list1</div><div class="line">&quot;world&quot;</div><div class="line">redis 127.0.0.1:6379&gt; lrange list1 0 3</div><div class="line">1) &quot;redis&quot;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-</blockquote>
-<p>#####1.2.4jedis中操作List<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">String books[] = &#123;&quot;aaa&quot;,&quot;bbb&quot;,&quot;ccc&quot;,&quot;ddd&quot;,&quot;eee&quot;&#125;;</div><div class="line">jedis.lpush(&quot;books&quot;,books);</div><div class="line">System.out.println(jedis.llen(&quot;books&quot;));</div><div class="line">jedis.lrange(&quot;books&quot;,0,100).forEach(e-&gt;&#123;</div><div class="line">    System.out.println(e);</div><div class="line">&#125;);</div><div class="line">System.out.println(&quot;LINDEX:&quot;+jedis.lindex(&quot;books&quot;,3));</div><div class="line">jedis.linsert(&quot;books&quot;, BinaryClient.LIST_POSITION.AFTER,&quot;aaa&quot;,&quot;xxx&quot;);</div><div class="line">System.out.println(&quot;-----------&quot;);</div><div class="line">jedis.lrange(&quot;books&quot;,0,100).forEach(e-&gt;&#123;</div><div class="line">    System.out.println(e);</div><div class="line">&#125;);</div><div class="line">System.out.println(&quot;-----------&quot;);</div><div class="line"></div><div class="line">jedis.lrem(&quot;books&quot;,0,&quot;ccc&quot;);</div><div class="line"></div><div class="line">jedis.lset(&quot;books&quot;,0,&quot;yy&quot;);</div><div class="line">jedis.lrange(&quot;books&quot;,0,100).forEach(e-&gt;&#123;</div><div class="line">    System.out.println(e);</div><div class="line">&#125;);</div><div class="line">jedis.close();</div></pre></td></tr></table></figure></p>
-<p>####1.3.Hash</p>
-<p>#####1.3.1结构说明</p>
-<blockquote>
-<p>散列类型存储了字段和字段值的映射，但字段值只能是字符串，不支持其他类型，也就是说，散列类型不能<br>嵌套其他的数据类型。</p>
-<p>#####1.3.2基本命令使用</p>
-<ul>
-<li>HSET<br>HSET key field value 设置对象指定字段的值</li>
-<li>HGET<br>HGET key field 获取对象中该field属性域的值</li>
-<li>HMSET<br>HMSET key field value [field value …] 同时设置对象中一个或多个字段的值</li>
-<li>HMGET<br>HMGET key field[field…] 获取对象的一个或多个指定字段的值</li>
-<li>HGETALL<br>HGETALL key 获取对象的所有属性域和值</li>
-<li>HDEL<br>HDEL key field[field…] 删除对象的一个或几个属性域，不存在的属性将被忽略<br>#####1.3.3使用示例<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; hset person name jack</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; hset person age 20</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; hset person sex famale</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; hgetall person</div><div class="line">1) &quot;name&quot;</div><div class="line">2) &quot;jack&quot;</div><div class="line">3) &quot;age&quot;</div><div class="line">4) &quot;20&quot;</div><div class="line">5) &quot;sex&quot;</div><div class="line">6) &quot;famale&quot;</div><div class="line">127.0.0.1:6379&gt; hkeys person</div><div class="line">1) &quot;name&quot;</div><div class="line">2) &quot;age&quot;</div><div class="line">3) &quot;sex&quot;</div><div class="line">127.0.0.1:6379&gt; hvals person</div><div class="line">1) &quot;jack&quot;</div><div class="line">2) &quot;20&quot;</div><div class="line">3) &quot;famale&quot;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-</blockquote>
-<p>#####1.3.4.Jedis中操作Hash结构<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Map&lt;String,String&gt; dataMap = new HashMap&lt;String,String&gt;();</div><div class="line">dataMap.put(&quot;id&quot;,&quot;1001&quot;);</div><div class="line">dataMap.put(&quot;name&quot;,&quot;Lisa&quot;);</div><div class="line">dataMap.put(&quot;age&quot;,&quot;23&quot;);</div><div class="line">jedis.hmset(&quot;user_1001&quot;,dataMap);</div><div class="line">System.out.println(jedis.hget(&quot;user_1001&quot;,&quot;age&quot;));</div><div class="line">dataMap = jedis.hgetAll(&quot;user_1001&quot;);</div><div class="line">System.out.println(dataMap);</div></pre></td></tr></table></figure></p>
-<h3 id="Redis配置文件"><a href="#Redis配置文件" class="headerlink" title="Redis配置文件"></a>Redis配置文件</h3><blockquote>
-<p>redis默认配置文件为redis.conf,常用配置如下：</p>
-<ol>
-<li>port  服务端口号</li>
-<li>bind  绑定ip，其他的ip不能访问（多个ip用空格隔开）</li>
-<li>databases 数据库数量，默认为16个</li>
-<li>daemonize 设置为守护进程</li>
-<li>maxmemory 最大内存大小</li>
-</ol>
-</blockquote>
-<h3 id="Redis的持久化"><a href="#Redis的持久化" class="headerlink" title="Redis的持久化"></a>Redis的持久化</h3><blockquote>
-<p>Redis支持两种方式的持久化，一种是RDB，一种是AOF。可以单独使用其中一种或者两种结合使用。</p>
-<p>####3.1.RDB持久化<br>RDB是用过快照完成的，当符合一定条件时，Redis会自动将内存中的所有数据进行快照并且存储到硬盘上。<br>进行快照的条件在配置文件中指定。RDB是Redis默认的持久化方式。<br><br>在配置文件中预置了3个RDB持久化的条件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">save 900 1 #15分钟内有至少一个键被更改则进行快照</div><div class="line">save 300 10 #5分钟内至少有10个键被更改则进行快照</div><div class="line">save 60 100000 #1分钟内至少有10000个键被更改则进行快照</div></pre></td></tr></table></figure></p>
-<p>以上条件之间是或的关系。默认的rdb文件路径是在当前目录，文件名是：dump.rdb，可以在配置文件<br>中修改路径和文件名，分别是dir和dbfilename。注释掉所有的RDB触发条件即可关闭RDB持久化。</p>
-<p>####3.2.AOF持久化<br>Redis的AOF持久化的原理是将发送到Redis服务端的每一条命令都记录下来，并且保存到硬盘中的AOF文件。<br>AOF文件的位置和RDB文件的位置相同，都是通过dir参数设置。默认的文件名是appendonly.aof，可以通过<br>appendfilename参数修改。AOF持久化默认是不开启的，在配置文件中开启：<br><code>appendonly  yes</code><br></p>
-<h3 id="4-Redis集群"><a href="#4-Redis集群" class="headerlink" title="4.Redis集群"></a>4.Redis集群</h3><p>在Redis3.0及以上版本一大特性就是集群。</p>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;Redis的基本数据类型&quot;&gt;&lt;a href=&quot;#Redis的基本数据类型&quot; class=&quot;headerlink&quot; title=&quot;Redis的基本数据类型&quot;&gt;&lt;/a&gt;Redis的基本数据类型&lt;/h3&gt;&lt;blockquote&gt;
-&lt;p&gt;redis中目前支持五种数据类型：
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yoursite.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="redis" scheme="http://yoursite.com/tags/redis/"/>
-    
-      <category term="nosql" scheme="http://yoursite.com/tags/nosql/"/>
     
   </entry>
   
