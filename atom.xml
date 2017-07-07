@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>JollyFly&#39;s Blog</title>
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2017-07-07T07:49:02.207Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>JollyFly</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>随笔</title>
+    <link href="http://yoursite.com/2017/07/07/first/"/>
+    <id>http://yoursite.com/2017/07/07/first/</id>
+    <published>2017-07-07T06:23:48.000Z</published>
+    <updated>2017-07-07T07:49:02.207Z</updated>
+    
+    <content type="html"><![CDATA[<p>第一篇博客，欢迎大家点赞、打赏、订阅、丢香蕉给我</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;第一篇博客，欢迎大家点赞、打赏、订阅、丢香蕉给我&lt;/p&gt;
+
+    
+    </summary>
+    
+      <category term="日记" scheme="http://yoursite.com/categories/%E6%97%A5%E8%AE%B0/"/>
+    
+    
+      <category term="随笔" scheme="http://yoursite.com/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
+  
+</feed>
