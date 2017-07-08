@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="jollyfly, 个人博客" />
+  <meta name="keywords" content="tcp通信,传输控制协议," />
 
 
 
@@ -89,15 +89,17 @@
 
 
 
-<meta name="description" content="技术博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="JollyFly&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/tags/随笔/index.html">
+<meta name="description" content="使用java进行TCP通信已经比较熟练了，但是对其中的过程及原理还不是很了解。本次使用网络抓包分析工具Wireshark对TCP通信的过程进行探索，并记录。  TCP(Transmission Control Protocol)即传输控制协议">
+<meta name="keywords" content="tcp通信,传输控制协议">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP通信的探索">
+<meta property="og:url" content="http://yoursite.com/2017/07/08/tcp/index.html">
 <meta property="og:site_name" content="JollyFly&#39;s Blog">
-<meta property="og:description" content="技术博客">
+<meta property="og:description" content="使用java进行TCP通信已经比较熟练了，但是对其中的过程及原理还不是很了解。本次使用网络抓包分析工具Wireshark对TCP通信的过程进行探索，并记录。  TCP(Transmission Control Protocol)即传输控制协议">
+<meta property="og:updated_time" content="2017-07-08T05:03:11.670Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JollyFly&#39;s Blog">
-<meta name="twitter:description" content="技术博客">
+<meta name="twitter:title" content="TCP通信的探索">
+<meta name="twitter:description" content="使用java进行TCP通信已经比较熟练了，但是对其中的过程及原理还不是很了解。本次使用网络抓包分析工具Wireshark对TCP通信的过程进行探索，并记录。  TCP(Transmission Control Protocol)即传输控制协议">
 
 
 
@@ -125,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/随笔/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/07/08/tcp/"/>
 
 
 
 
 
-  <title> 标签: 随笔 | JollyFly's Blog </title>
+  <title> TCP通信的探索 | JollyFly's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -156,7 +158,7 @@
     
   
 
-  <div class="container sidebar-position-left  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -294,46 +296,208 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        随笔
-        <small>标签</small>
-      </h2>
-    </div>
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/08/tcp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JollyFly">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JollyFly's Blog">
+    </span>
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                TCP通信的探索
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-08T13:50:28+08:00">
+                2017-07-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/网络基础/" itemprop="url" rel="index">
+                    <span itemprop="name">网络基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
       
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+      
+        <blockquote>
+<p>使用java进行TCP通信已经比较熟练了，但是对其中的过程及原理还不是很了解。本次使用网络<br>抓包分析工具Wireshark对TCP通信的过程进行探索，并记录。</p>
+</blockquote>
+<p>TCP(Transmission Control Protocol)即传输控制协议</p>
 
-      <h1 class="post-title">
+      
+    </div>
+
+    <div>
+      
         
-            <a class="post-title-link" href="/2017/07/07/first/" itemprop="url">
-              
-                <span itemprop="name">随笔</span>
-              
-            </a>
+
+      
+    </div>
+
+    <div>
+      
         
-      </h1>
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.jpg" alt="JollyFly WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="JollyFly Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-07-07T14:23:48+08:00"
-              content="2017-07-07" >
-          07-07
-        </time>
-      </div>
 
-    </header>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tcp通信/" rel="tag"># tcp通信</a>
+          
+            <a href="/tags/传输控制协议/" rel="tag"># 传输控制协议</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/08/rabbitmq-install/" rel="next" title="linux下安装rabbitMQ">
+                <i class="fa fa-chevron-left"></i> linux下安装rabbitMQ
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/08/volatile/" rel="prev" title="Java中Volatile关键字详解">
+                Java中Volatile关键字详解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </article>
 
 
-    
-  </div>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -341,6 +505,12 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
 
         </div>
         
@@ -566,6 +736,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
@@ -597,6 +771,10 @@
   
     
 
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2138289"></script>
+      <!-- UY END -->
     
   
 

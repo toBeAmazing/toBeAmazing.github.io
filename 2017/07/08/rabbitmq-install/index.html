@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="jollyfly, 个人博客" />
+  <meta name="keywords" content="mq," />
 
 
 
@@ -89,15 +89,21 @@
 
 
 
-<meta name="description" content="技术博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="JollyFly&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/tags/随笔/index.html">
+<meta name="description" content="此篇博客主要记录rabbitMQ在linux系统上的安装过程，使用与CentOS、Redhat。  安装ErlangRabbitMQ由Erlang实现，所以安装Erlang必不可少 1234567cd /usr/local/src/mkdir rabbitmqcd rabbitmqwget http://packages.erlang-solutions.com/erlang-solutions">
+<meta name="keywords" content="mq">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux下安装rabbitMQ">
+<meta property="og:url" content="http://yoursite.com/2017/07/08/rabbitmq-install/index.html">
 <meta property="og:site_name" content="JollyFly&#39;s Blog">
-<meta property="og:description" content="技术博客">
+<meta property="og:description" content="此篇博客主要记录rabbitMQ在linux系统上的安装过程，使用与CentOS、Redhat。  安装ErlangRabbitMQ由Erlang实现，所以安装Erlang必不可少 1234567cd /usr/local/src/mkdir rabbitmqcd rabbitmqwget http://packages.erlang-solutions.com/erlang-solutions">
+<meta property="og:image" content="http://yoursite.com/img/erlang.png">
+<meta property="og:image" content="http://yoursite.com/img/rabbitmq1.png">
+<meta property="og:image" content="http://yoursite.com/img/rabbitmq2.png">
+<meta property="og:updated_time" content="2017-07-08T04:56:54.236Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JollyFly&#39;s Blog">
-<meta name="twitter:description" content="技术博客">
+<meta name="twitter:title" content="linux下安装rabbitMQ">
+<meta name="twitter:description" content="此篇博客主要记录rabbitMQ在linux系统上的安装过程，使用与CentOS、Redhat。  安装ErlangRabbitMQ由Erlang实现，所以安装Erlang必不可少 1234567cd /usr/local/src/mkdir rabbitmqcd rabbitmqwget http://packages.erlang-solutions.com/erlang-solutions">
+<meta name="twitter:image" content="http://yoursite.com/img/erlang.png">
 
 
 
@@ -125,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/随笔/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/07/08/rabbitmq-install/"/>
 
 
 
 
 
-  <title> 标签: 随笔 | JollyFly's Blog </title>
+  <title> linux下安装rabbitMQ | JollyFly's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -156,7 +162,7 @@
     
   
 
-  <div class="container sidebar-position-left  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -294,46 +300,229 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        随笔
-        <small>标签</small>
-      </h2>
-    </div>
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/08/rabbitmq-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JollyFly">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JollyFly's Blog">
+    </span>
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                linux下安装rabbitMQ
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-08T11:50:48+08:00">
+                2017-07-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/软件安装/" itemprop="url" rel="index">
+                    <span itemprop="name">软件安装</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
       
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+      
+        <blockquote>
+<p>此篇博客主要记录rabbitMQ在linux系统上的安装过程，使用与CentOS、Redhat。</p>
+</blockquote>
+<h2 id="安装Erlang"><a href="#安装Erlang" class="headerlink" title="安装Erlang"></a>安装Erlang</h2><p>RabbitMQ由Erlang实现，所以安装Erlang必不可少</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src/</div><div class="line">mkdir rabbitmq</div><div class="line"><span class="built_in">cd</span> rabbitmq</div><div class="line">wget http://packages.erlang-solutions.com/erlang-solutions-1.0-1.noarch.rpm</div><div class="line">rpm -Uvh erlang-solutions-1.0-1.noarch.rpm</div><div class="line">rpm --import http://packages.erlang-solutions.com/rpm/erlang_solutions.asc</div><div class="line">sudo yum install erlang</div></pre></td></tr></table></figure>
+<blockquote>
+<p><img src="/img/erlang.png" alt="安装Erlang"></p>
+</blockquote>
+<h2 id="安装RabbitMQ"><a href="#安装RabbitMQ" class="headerlink" title="安装RabbitMQ"></a>安装RabbitMQ</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#上传rpm安装包到/usr/local/src/rabbitmq/   可使用rz命令上传</span></div><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src/rabbitmq</div><div class="line">rz -y</div><div class="line"><span class="comment">#上传完成后安装</span></div><div class="line">rpm -ivh rabbitmq-server-3.4.1-1.noarch.rpm</div></pre></td></tr></table></figure>
+<h3 id="服务的启动与停止"><a href="#服务的启动与停止" class="headerlink" title="服务的启动与停止"></a>服务的启动与停止</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">service rabbitmq-server start</div><div class="line">service rabbitmq-server stop</div><div class="line">service rabbitmq-server restart</div></pre></td></tr></table></figure>
+<h3 id="设置开机启动"><a href="#设置开机启动" class="headerlink" title="设置开机启动"></a>设置开机启动</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chkconfig rabbitmq-server on</div></pre></td></tr></table></figure>
+<h3 id="设置配置文件"><a href="#设置配置文件" class="headerlink" title="设置配置文件"></a>设置配置文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /etc/rabbitmq</div><div class="line">cp /usr/share/doc/rabbitmq-server-3.4.1/rabbitmq.config.example /etc/rabbitmq/</div><div class="line">mv rabbitmq.config.example rabbitmq.config</div></pre></td></tr></table></figure>
+<h3 id="开启用户远程访问"><a href="#开启用户远程访问" class="headerlink" title="开启用户远程访问"></a>开启用户远程访问</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim /etc/rabbitmq/rabbitmq.config</div></pre></td></tr></table></figure>
+<p><img src="/img/rabbitmq1.png" alt="用户远程访问"></p>
+<h3 id="开启web界面管理工具"><a href="#开启web界面管理工具" class="headerlink" title="开启web界面管理工具"></a>开启web界面管理工具</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rabbitmq-plugins <span class="built_in">enable</span> rabbitmq_management</div><div class="line">service rabbitmq-server restart</div></pre></td></tr></table></figure>
+<h3 id="防火墙开放15672端口"><a href="#防火墙开放15672端口" class="headerlink" title="防火墙开放15672端口"></a>防火墙开放15672端口</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/sbin/iptables -I INPUT -p tcp --dport 15672 -j ACCEPT</div><div class="line">/etc/rc.d/init.d/iptables save</div></pre></td></tr></table></figure>
+<h2 id="添加用户"><a href="#添加用户" class="headerlink" title="添加用户"></a>添加用户</h2><blockquote>
+<p>安装并配置完成后，需要登录web界面管理工具添加用户</p>
+</blockquote>
+<p><img src="/img/rabbitmq2.png" alt="web界面"></p>
+<h3 id="用户角色"><a href="#用户角色" class="headerlink" title="用户角色"></a>用户角色</h3><ol>
+<li>超级管理员（adminisitrator）<br>可登陆管理控制台，可查看所有的信息，并且可以对用户，策略(policy)进行操作。</li>
+<li>监控者(monitoring)<br>可登陆管理控制台，同时可以查看rabbitmq节点的相关信息(进程数，内存使用情况，磁盘使用情况等)</li>
+<li>策略制定者(policymaker)<br>可登陆管理控制台, 同时可以对polic进行管理。但无法查看节点的相关信息(上图红框标识的部分)。</li>
+<li>普通管理者(management)<br>仅可登陆管理控制台，无法看到节点信息，也无法对策略进行管理。</li>
+<li>其他<br>无法登陆管理控制台，通常就是普通的生产者和消费者。</li>
+</ol>
 
-      <h1 class="post-title">
+      
+    </div>
+
+    <div>
+      
         
-            <a class="post-title-link" href="/2017/07/07/first/" itemprop="url">
-              
-                <span itemprop="name">随笔</span>
-              
-            </a>
+
+      
+    </div>
+
+    <div>
+      
         
-      </h1>
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.jpg" alt="JollyFly WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="JollyFly Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-07-07T14:23:48+08:00"
-              content="2017-07-07" >
-          07-07
-        </time>
-      </div>
 
-    </header>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mq/" rel="tag"># mq</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/07/nio/" rel="next" title="NIO学习与总结">
+                <i class="fa fa-chevron-left"></i> NIO学习与总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/08/tcp/" rel="prev" title="TCP通信的探索">
+                TCP通信的探索 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </article>
 
 
-    
-  </div>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -341,6 +530,12 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
 
         </div>
         
@@ -360,8 +555,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -459,6 +663,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Erlang"><span class="nav-number">1.</span> <span class="nav-text">安装Erlang</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装RabbitMQ"><span class="nav-number">2.</span> <span class="nav-text">安装RabbitMQ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#服务的启动与停止"><span class="nav-number">2.1.</span> <span class="nav-text">服务的启动与停止</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置开机启动"><span class="nav-number">2.2.</span> <span class="nav-text">设置开机启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置配置文件"><span class="nav-number">2.3.</span> <span class="nav-text">设置配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开启用户远程访问"><span class="nav-number">2.4.</span> <span class="nav-text">开启用户远程访问</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开启web界面管理工具"><span class="nav-number">2.5.</span> <span class="nav-text">开启web界面管理工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防火墙开放15672端口"><span class="nav-number">2.6.</span> <span class="nav-text">防火墙开放15672端口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加用户"><span class="nav-number">3.</span> <span class="nav-text">添加用户</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用户角色"><span class="nav-number">3.1.</span> <span class="nav-text">用户角色</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -566,6 +786,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
@@ -597,6 +821,10 @@
   
     
 
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2138289"></script>
+      <!-- UY END -->
     
   
 
