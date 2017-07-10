@@ -132,6 +132,82 @@
   </entry>
   
   <entry>
+    <title>NIO学习与总结</title>
+    <link href="http://yoursite.com/2017/07/07/nio/"/>
+    <id>http://yoursite.com/2017/07/07/nio/</id>
+    <published>2017-07-07T08:50:48.000Z</published>
+    <updated>2017-07-07T09:02:50.594Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><blockquote>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nio即non-blocking IO翻译过来就是非阻塞式IO</p>
+<h4 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h4><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Channel意思是通道，在NIO中，数据从通道读入到缓冲区，<br>再从缓冲区获取。常见的Channel类型有：FileChannel,DatagramChannel,SocketChannel,<br>ServerSocketChannel。</p>
+<h4 id="Buffer"><a href="#Buffer" class="headerlink" title="Buffer"></a>Buffer</h4><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NIO里面关键的Buffer实现：ByteBuffer，CharBuffer，<br>DoubleBuffer，FloatBuffer，IntBuffer，LongBuffer，ShortBuffer<br>这些Buffer覆盖了你能通过IO发送的基本数据类型：byte，short，int，long，float，<br>double和char。<br><br>Buffer的初始状态为read状态，如果需要写入数据  需要先调用flip()方法<br></p>
+<ul>
+<li>capacity:<br><br>作为一个内存块，Buffer有一个固定的大小值，也叫“capacity”.你只能往里写capacity个<br>byte、long，char等类型。一旦Buffer满了，需要将其清空（通过读数据或者清除数据）<br>才能继续写数据往里写数据。</li>
+<li>position<br><br>当你写数据到Buffer中时，position表示当前的位置。初始的position值为0.当一个byte、<br>long等数据写到Buffer后， position会向前移动到下一个可插入数据的Buffer单元。<br>position最大可为capacity – 1.当读取数据时，也是从某个特定位置读。当将Buffer<br>从写模式切换到读模式，position会被重置为0. 当从Buffer的position处读取数据时，<br>position向前移动到下一个可读的位置。</li>
+<li>limit<br><br>在写模式下，Buffer的limit表示你最多能往Buffer里写多少数据。 写模式下，limit等于<br>Buffer的capacity。当切换Buffer到读模式时， limit表示你最多能读到多少数据。因此，<br>当切换Buffer到读模式时，limit会被设置成写模式下的position值。换句话说，你能读到<br>之前写入的所有数据（limit被设置成已写数据的数量，这个值在写模式下就是position）</li>
+<li>scatter/gather<br><br>分散（scatter）从Channel中读取是指在读操作时将读取的数据写入多个buffer中。因此，<br>Channel将从Channel中读取的数据“分散（scatter）”到多个Buffer中。<br><br>聚集（gather）写入Channel是指在写操作时将多个buffer的数据写入同一个Channel，<br>因此，Channel将多个Buffer中的数据“聚集（gather）”后发送到Channel。<h4 id="Selector"><a href="#Selector" class="headerlink" title="Selector"></a>Selector</h4>使用Selector可以用一个线程来管理多个通道。<br><br>Selector的创建:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">//使用open()方法创建一个Selector对象</div><div class="line">Selector selector = Selector.open();</div><div class="line">//与Selector一起使用时，Channel必须处于非阻塞模式下。这意味着不能将FileChannel&lt;br&gt;</div><div class="line">//与Selector一起使用，因为FileChannel不能切换到非阻塞模式。而套接字通道都可以。</div><div class="line">serverSocketChannel.configureBlocking(false);</div><div class="line">SelectionKey key = serverSocketChannel.register(selector,Selectionkey.OP_READ);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;以上代码中，register()方法的第二个参数，<br>意思是在通过Selector监听Channel时对什么事件感兴趣。可以监听四中不同类型的事件：</p>
+<ol>
+<li>Connect</li>
+<li>Accept</li>
+<li>Read</li>
+<li>Write<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通道触发了一个事件意思是该事件已经就绪。<br>所以，某个channel成功连接到另一个服务器称为”连接就绪”。一个server socket channel准备好接<br>收新进入的连接称为”接收就绪”。一个有数据可读的通道可以说是”读就绪”。等待写数据的通道可以说是<br>“写就绪”。这四种事件用SelectionKey的四个常量来表示：</li>
+<li>SelectionKey.OP_CONNECT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   连接就绪</li>
+<li>SelectionKey.OP_ACCEPT     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   接收就绪</li>
+<li>SelectionKey.OP_READ    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     读就绪</li>
+<li>SelectionKey.OP_WRITE    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     写就绪<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果你对不止一种事件感兴趣，那么可以用<br>“位或”操作符将常量连接起来，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>selector中select()方法:<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">int select(); //会阻塞</div><div class="line">int select(long timeout); //阻塞timeout毫秒</div><div class="line">int selectNow();//不会阻塞，立即返回</div></pre></td></tr></table></figure></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select()方法返回的int值表示有多少通道已经就绪。<br>   亦即，自上次调用select()方法后有多少通道变成就绪状态。<br>   如果调用select()方法，因为有一个通道变成就绪状态，返回了1，若再次调用select()方法，如果另一个通道就<br>   绪了，它会再次返回1.如果对第一个就绪的channel没有做任何操作，现在就有两个就绪的通道，但是在每次select()<br>   方法调用之间，只有一个通道就绪了。调用过select()方法之后。如果返回值表明有一个或更多通道就绪了，就可以<br>   通过调用selector的selectKeys()方法，访问”已选择健集”中的就绪通道，如下所示：<br>   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"> Set selectedKeys = selector.selectedKeys();</div><div class="line"> //可以遍历这个已选择的键集合来访问就绪的通道。</div><div class="line"> Set selectKeys = selector.selectedKeys();</div><div class="line"> Iterator keyIterator = selectedKey.iterator();</div><div class="line"> while(keyIterator.hasNext())&#123;</div><div class="line">     SelectionKey key = keyIterator.next();</div><div class="line">     if(key.isAcceptable)&#123;</div><div class="line">         // 接收就绪</div><div class="line">     &#125; </div><div class="line">     if(key.isConnectable())&#123;</div><div class="line">         // 连接就绪</div><div class="line">     &#125;</div><div class="line">     if(key.isReadable())&#123;</div><div class="line">         // 读就绪</div><div class="line">     &#125;</div><div class="line">     if(key.isWritable())&#123;</div><div class="line">         // 写就绪</div><div class="line">     &#125;</div><div class="line">     keyIterator.remove();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注意每次迭代末尾的keyIterator.remove()调用。<br>    Selector不会自己从已选择键集中移除SelectionKey实例。<br>   必须在处理完通道时自己移除。<br>   下次该通道变成就绪时，Selector会再次将其放入已选择健集中。<br>   SelectionKey.channel()方法返回的通道需要转型成你要处理的类型，如ServerSocketChannel或SocketChannel等。<br><br>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wakeUp():<br><br>   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;某个线程调用select()方法后阻塞了，即使没有通道已经就绪，<br>   也有办法让其从select()方法返回。<br>   只要让其它线程在第一个线程调用的select()方法的那个对象上调用selector.wakeup()方法即可。<br>   阻塞在select()方法上的线程会立马返回。<br>   如果有其它线程调用了wakeup()方法，但当前没有线程阻塞在select()方法上，下个调用select()方法的线程会立即”醒来(wake up)”。<br>   <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>   用完Selector之后调用其close()方法会关闭该Selector，且使注册到该Selector上的所有SelectionKey实例无效。通道本身并不会关闭。</p>
+<h4 id="SelectionKey"><a href="#SelectionKey" class="headerlink" title="SelectionKey"></a>SelectionKey<br></h4><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当向Selector注册Channel时，register()<br>  方法会返回一个SelectionKey对象。这个对象包含了一下内容：</p>
+<ol>
+<li>interest集合<br><br>interest集合是你所选择的感兴趣的事件集合。可以通过SelectionKey读写interest集合，像这样：   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">int interestSet = selectionKey.interestOps();</div><div class="line">boolean isInterestedAccept = (interestSet &amp; SelectionKey.OP_ACCEPT) == SelectionKey.OP_ACCEPT;</div><div class="line">boolean isInterestedInConnect = (interestSet &amp; SelectionKey.OP_CONNECT) == SelectionKey.OP_CONNECT;</div><div class="line">boolean isInterestedInRead = (insterestSet &amp; SelectionKey.OP_READ) == SelectionKey.OP_READ;</div><div class="line">boolean isInterestedInWrite = (insterestSet &amp; SelectionKey.OP_WRITE) == SelectionKey.OP_WRITE;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>通过”位与”操作interest集合和给定的SelectionKey常量，可以确定某个事件是否在interest集合中。</p>
+<ol>
+<li>ready集合<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ready集合是通道已经准备就绪的操作的集合。<br>你可以这样访问ready集合:<br>   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">int readySet = selectionKey.readyOps();</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;可以用像检测interest集合那样的方法，<br>        来检测Channel中什么事件或操作已经就绪。但是，也可以使用一下四个方法，它们都会返回一个布尔类型：<br>        <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">selectionKey.isAcceptable();</div><div class="line">selectionKey.isConnectable();</div><div class="line">selectionKey.isReadable();</div><div class="line">sekectionKey.isWritable();</div></pre></td></tr></table></figure></p>
+</blockquote>
+<ol>
+<li><p>Channel和Selector：</p>
+<blockquote>
+<p>可通过一下方式获取Channel和Selector对象</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Channel channel = selectionKey.channel();</div><div class="line">Selector selector = selectionKey.selector();</div></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p>附加对象</p>
+<blockquote>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;可以将一个对像或者更多信息附着到<br>SelectionKey上，这样就能方便的识别某个给定的通道。附加方法如下：</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">selectionKey.attach(theObject);</div><div class="line">Object attachedObj = selectionKey.attachment();</div></pre></td></tr></table></figure></blockquote>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;概念&quot;&gt;&lt;a href=&quot;#概念&quot; class=&quot;headerlink&quot; title=&quot;概念&quot;&gt;&lt;/a&gt;概念&lt;/h4&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;nio即non-b
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yoursite.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="java基础" scheme="http://yoursite.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/java%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="nio" scheme="http://yoursite.com/tags/nio/"/>
+    
+  </entry>
+  
+  <entry>
     <title>redis学习与总结</title>
     <link href="http://yoursite.com/2017/07/07/redis/"/>
     <id>http://yoursite.com/2017/07/07/redis/</id>
@@ -210,82 +286,6 @@
       <category term="redis" scheme="http://yoursite.com/tags/redis/"/>
     
       <category term="nosql" scheme="http://yoursite.com/tags/nosql/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>NIO学习与总结</title>
-    <link href="http://yoursite.com/2017/07/07/nio/"/>
-    <id>http://yoursite.com/2017/07/07/nio/</id>
-    <published>2017-07-07T08:50:48.000Z</published>
-    <updated>2017-07-07T09:02:50.594Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><blockquote>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nio即non-blocking IO翻译过来就是非阻塞式IO</p>
-<h4 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h4><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Channel意思是通道，在NIO中，数据从通道读入到缓冲区，<br>再从缓冲区获取。常见的Channel类型有：FileChannel,DatagramChannel,SocketChannel,<br>ServerSocketChannel。</p>
-<h4 id="Buffer"><a href="#Buffer" class="headerlink" title="Buffer"></a>Buffer</h4><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NIO里面关键的Buffer实现：ByteBuffer，CharBuffer，<br>DoubleBuffer，FloatBuffer，IntBuffer，LongBuffer，ShortBuffer<br>这些Buffer覆盖了你能通过IO发送的基本数据类型：byte，short，int，long，float，<br>double和char。<br><br>Buffer的初始状态为read状态，如果需要写入数据  需要先调用flip()方法<br></p>
-<ul>
-<li>capacity:<br><br>作为一个内存块，Buffer有一个固定的大小值，也叫“capacity”.你只能往里写capacity个<br>byte、long，char等类型。一旦Buffer满了，需要将其清空（通过读数据或者清除数据）<br>才能继续写数据往里写数据。</li>
-<li>position<br><br>当你写数据到Buffer中时，position表示当前的位置。初始的position值为0.当一个byte、<br>long等数据写到Buffer后， position会向前移动到下一个可插入数据的Buffer单元。<br>position最大可为capacity – 1.当读取数据时，也是从某个特定位置读。当将Buffer<br>从写模式切换到读模式，position会被重置为0. 当从Buffer的position处读取数据时，<br>position向前移动到下一个可读的位置。</li>
-<li>limit<br><br>在写模式下，Buffer的limit表示你最多能往Buffer里写多少数据。 写模式下，limit等于<br>Buffer的capacity。当切换Buffer到读模式时， limit表示你最多能读到多少数据。因此，<br>当切换Buffer到读模式时，limit会被设置成写模式下的position值。换句话说，你能读到<br>之前写入的所有数据（limit被设置成已写数据的数量，这个值在写模式下就是position）</li>
-<li>scatter/gather<br><br>分散（scatter）从Channel中读取是指在读操作时将读取的数据写入多个buffer中。因此，<br>Channel将从Channel中读取的数据“分散（scatter）”到多个Buffer中。<br><br>聚集（gather）写入Channel是指在写操作时将多个buffer的数据写入同一个Channel，<br>因此，Channel将多个Buffer中的数据“聚集（gather）”后发送到Channel。<h4 id="Selector"><a href="#Selector" class="headerlink" title="Selector"></a>Selector</h4>使用Selector可以用一个线程来管理多个通道。<br><br>Selector的创建:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">//使用open()方法创建一个Selector对象</div><div class="line">Selector selector = Selector.open();</div><div class="line">//与Selector一起使用时，Channel必须处于非阻塞模式下。这意味着不能将FileChannel&lt;br&gt;</div><div class="line">//与Selector一起使用，因为FileChannel不能切换到非阻塞模式。而套接字通道都可以。</div><div class="line">serverSocketChannel.configureBlocking(false);</div><div class="line">SelectionKey key = serverSocketChannel.register(selector,Selectionkey.OP_READ);</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;以上代码中，register()方法的第二个参数，<br>意思是在通过Selector监听Channel时对什么事件感兴趣。可以监听四中不同类型的事件：</p>
-<ol>
-<li>Connect</li>
-<li>Accept</li>
-<li>Read</li>
-<li>Write<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通道触发了一个事件意思是该事件已经就绪。<br>所以，某个channel成功连接到另一个服务器称为”连接就绪”。一个server socket channel准备好接<br>收新进入的连接称为”接收就绪”。一个有数据可读的通道可以说是”读就绪”。等待写数据的通道可以说是<br>“写就绪”。这四种事件用SelectionKey的四个常量来表示：</li>
-<li>SelectionKey.OP_CONNECT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   连接就绪</li>
-<li>SelectionKey.OP_ACCEPT     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   接收就绪</li>
-<li>SelectionKey.OP_READ    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     读就绪</li>
-<li>SelectionKey.OP_WRITE    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     写就绪<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果你对不止一种事件感兴趣，那么可以用<br>“位或”操作符将常量连接起来，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>selector中select()方法:<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">int select(); //会阻塞</div><div class="line">int select(long timeout); //阻塞timeout毫秒</div><div class="line">int selectNow();//不会阻塞，立即返回</div></pre></td></tr></table></figure></p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select()方法返回的int值表示有多少通道已经就绪。<br>   亦即，自上次调用select()方法后有多少通道变成就绪状态。<br>   如果调用select()方法，因为有一个通道变成就绪状态，返回了1，若再次调用select()方法，如果另一个通道就<br>   绪了，它会再次返回1.如果对第一个就绪的channel没有做任何操作，现在就有两个就绪的通道，但是在每次select()<br>   方法调用之间，只有一个通道就绪了。调用过select()方法之后。如果返回值表明有一个或更多通道就绪了，就可以<br>   通过调用selector的selectKeys()方法，访问”已选择健集”中的就绪通道，如下所示：<br>   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"> Set selectedKeys = selector.selectedKeys();</div><div class="line"> //可以遍历这个已选择的键集合来访问就绪的通道。</div><div class="line"> Set selectKeys = selector.selectedKeys();</div><div class="line"> Iterator keyIterator = selectedKey.iterator();</div><div class="line"> while(keyIterator.hasNext())&#123;</div><div class="line">     SelectionKey key = keyIterator.next();</div><div class="line">     if(key.isAcceptable)&#123;</div><div class="line">         // 接收就绪</div><div class="line">     &#125; </div><div class="line">     if(key.isConnectable())&#123;</div><div class="line">         // 连接就绪</div><div class="line">     &#125;</div><div class="line">     if(key.isReadable())&#123;</div><div class="line">         // 读就绪</div><div class="line">     &#125;</div><div class="line">     if(key.isWritable())&#123;</div><div class="line">         // 写就绪</div><div class="line">     &#125;</div><div class="line">     keyIterator.remove();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注意每次迭代末尾的keyIterator.remove()调用。<br>    Selector不会自己从已选择键集中移除SelectionKey实例。<br>   必须在处理完通道时自己移除。<br>   下次该通道变成就绪时，Selector会再次将其放入已选择健集中。<br>   SelectionKey.channel()方法返回的通道需要转型成你要处理的类型，如ServerSocketChannel或SocketChannel等。<br><br>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wakeUp():<br><br>   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;某个线程调用select()方法后阻塞了，即使没有通道已经就绪，<br>   也有办法让其从select()方法返回。<br>   只要让其它线程在第一个线程调用的select()方法的那个对象上调用selector.wakeup()方法即可。<br>   阻塞在select()方法上的线程会立马返回。<br>   如果有其它线程调用了wakeup()方法，但当前没有线程阻塞在select()方法上，下个调用select()方法的线程会立即”醒来(wake up)”。<br>   <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>   用完Selector之后调用其close()方法会关闭该Selector，且使注册到该Selector上的所有SelectionKey实例无效。通道本身并不会关闭。</p>
-<h4 id="SelectionKey"><a href="#SelectionKey" class="headerlink" title="SelectionKey"></a>SelectionKey<br></h4><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当向Selector注册Channel时，register()<br>  方法会返回一个SelectionKey对象。这个对象包含了一下内容：</p>
-<ol>
-<li>interest集合<br><br>interest集合是你所选择的感兴趣的事件集合。可以通过SelectionKey读写interest集合，像这样：   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">int interestSet = selectionKey.interestOps();</div><div class="line">boolean isInterestedAccept = (interestSet &amp; SelectionKey.OP_ACCEPT) == SelectionKey.OP_ACCEPT;</div><div class="line">boolean isInterestedInConnect = (interestSet &amp; SelectionKey.OP_CONNECT) == SelectionKey.OP_CONNECT;</div><div class="line">boolean isInterestedInRead = (insterestSet &amp; SelectionKey.OP_READ) == SelectionKey.OP_READ;</div><div class="line">boolean isInterestedInWrite = (insterestSet &amp; SelectionKey.OP_WRITE) == SelectionKey.OP_WRITE;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>通过”位与”操作interest集合和给定的SelectionKey常量，可以确定某个事件是否在interest集合中。</p>
-<ol>
-<li>ready集合<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ready集合是通道已经准备就绪的操作的集合。<br>你可以这样访问ready集合:<br>   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">int readySet = selectionKey.readyOps();</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;可以用像检测interest集合那样的方法，<br>        来检测Channel中什么事件或操作已经就绪。但是，也可以使用一下四个方法，它们都会返回一个布尔类型：<br>        <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">selectionKey.isAcceptable();</div><div class="line">selectionKey.isConnectable();</div><div class="line">selectionKey.isReadable();</div><div class="line">sekectionKey.isWritable();</div></pre></td></tr></table></figure></p>
-</blockquote>
-<ol>
-<li><p>Channel和Selector：</p>
-<blockquote>
-<p>可通过一下方式获取Channel和Selector对象</p>
-   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Channel channel = selectionKey.channel();</div><div class="line">Selector selector = selectionKey.selector();</div></pre></td></tr></table></figure>
-</blockquote>
-</li>
-<li><p>附加对象</p>
-<blockquote>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;可以将一个对像或者更多信息附着到<br>SelectionKey上，这样就能方便的识别某个给定的通道。附加方法如下：</p>
-   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">selectionKey.attach(theObject);</div><div class="line">Object attachedObj = selectionKey.attachment();</div></pre></td></tr></table></figure></blockquote>
-</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h4 id=&quot;概念&quot;&gt;&lt;a href=&quot;#概念&quot; class=&quot;headerlink&quot; title=&quot;概念&quot;&gt;&lt;/a&gt;概念&lt;/h4&gt;&lt;blockquote&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;nio即non-b
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yoursite.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-      <category term="java基础" scheme="http://yoursite.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/java%E5%9F%BA%E7%A1%80/"/>
-    
-    
-      <category term="nio" scheme="http://yoursite.com/tags/nio/"/>
     
   </entry>
   
