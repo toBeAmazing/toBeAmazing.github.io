@@ -96,7 +96,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/07/07/mysql/index.html">
 <meta property="og:site_name" content="JollyFly&#39;s Blog">
 <meta property="og:description" content="1.数据库范式 第一范式（1NF）： 第一范式强调的是列的原子性，即列不能够再分成其他几列。   第二范式（2NF）： 首先要满足第一范式的要求，另外包含两部分内容，一是表必须有主键；二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。例如一个订单明细表（OrderId，ProductId，Quantity，UnitPrice）在这张表中，单单通过一个OrderId是不足以成为">
-<meta property="og:updated_time" content="2017-07-07T08:47:10.511Z">
+<meta property="og:updated_time" content="2017-07-10T05:46:32.334Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql学习与总结">
 <meta name="twitter:description" content="1.数据库范式 第一范式（1NF）： 第一范式强调的是列的原子性，即列不能够再分成其他几列。   第二范式（2NF）： 首先要满足第一范式的要求，另外包含两部分内容，一是表必须有主键；二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。例如一个订单明细表（OrderId，ProductId，Quantity，UnitPrice）在这张表中，单单通过一个OrderId是不足以成为">
@@ -456,14 +456,15 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#创建表</div><div class="line">    CREATE TABLE pseudohash(</div><div class="line">        id int unsigned NOT NULL auto_increment,</div><div class="line">        url varchar(255) NOT NULL,</div><div class="line">        url_crc int unsigned NOT NULL DEFAULT 0,</div><div class="line">        PRIMARY KEY(id);</div><div class="line">    );</div><div class="line">#创建触发器</div><div class="line">    CREATE TRIGGER pseudohash_crc_ins BEFORE INSERT ON pseudohash FOR EACH ROW BEGIN</div><div class="line">    SET NEW.url_crc=CRC32(NEW.url);</div><div class="line">    END;</div><div class="line"></div><div class="line">    CREATE TRIGGER pseudohash_crc_ins BEFORE UPDATE ON pseudohash FOR EACH ROW BEGIN</div><div class="line">    SET NEW.url_crc=CRC32(NEW.url);</div><div class="line">    END;</div></pre></td></tr></table></figure>
 <p> #####高性能的索引使用策略</p>
 <ol>
-<li><p>独立的列</p>
-<blockquote>
+<li>独立的列<blockquote>
 <p>一些不恰当的查询会使MySQL无法使用已有的索引，如果查询中的列不是独立的<br>列，则MySQL就不会使用索引。“独立的列”是指索引列不能是表达式的一部分，<br>也不能是函数的参数。例：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> actor_id <span class="keyword">FROM</span> sakila.actor</div><div class="line">    <span class="keyword">WHERE</span> actor_id + <span class="number">1</span> = <span class="number">5</span>;</div></pre></td></tr></table></figure>
 </blockquote>
-<p>凭肉眼就能看出WHERE中的表达式其实等价于actor_id = 4，但是MySQL无法自<br>动解析这个方程式。另一个常见的错误：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> ... <span class="keyword">WHERE</span> <span class="keyword">TO_DAYS</span>(<span class="keyword">CURRENT_DATE</span>)</div><div class="line">    - <span class="keyword">TO_DAYS</span>(date_col) &lt;= <span class="number">10</span>;</div></pre></td></tr></table></figure>
 </li>
+</ol>
+<p>  凭肉眼就能看出WHERE中的表达式其实等价于actor_id = 4，但是MySQL无法自<br>  动解析这个方程式。另一个常见的错误：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> ... <span class="keyword">WHERE</span> <span class="keyword">TO_DAYS</span>(<span class="keyword">CURRENT_DATE</span>)</div><div class="line">    - <span class="keyword">TO_DAYS</span>(date_col) &lt;= <span class="number">10</span>;</div></pre></td></tr></table></figure>
+<ol>
 <li><p>前缀索引和索引选择性</p>
 <blockquote>
 <p>如果索引列的字符串很长，索引会变得大且慢。通常可以索引开始部分的字符，这样可以大大节约索引<br>空间，从而提高索引效率。但这样也会降低索引的选择性。对于BLOB、TEXT或者很长的VARCHAR类型的列，<br>必须使用前缀索引，因为MySQL不允许索引这些列完整的长度。创建索引的SQL:</p>

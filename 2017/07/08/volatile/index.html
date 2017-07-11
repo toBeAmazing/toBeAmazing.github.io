@@ -89,17 +89,17 @@
 
 
 
-<meta name="description" content="volatile是java中的关键字，在涉及到并发编程时会用到，特地对其特点进行学习与总结，以更好的理解其应用场景以及其中的原理。  相关概念 可见性">
+<meta name="description" content="volatile是java中的关键字，在涉及到并发编程时会用到，特地对其特点进行学习与总结，以更好的理解其应用场景以及其中的原理。  相关概念volatile的意思是易变的，不稳定的。这个关键字在java中常用在并发编程中。要想理解这个关键字，首先了解以下三个概念。 原子性原子性这个概念在很多地方都会出现，其概念很多人都很熟悉，但是真正理解，还是要费点时间的。原子性就是在一个或多个操作中，要么全">
 <meta name="keywords" content="java基础,并发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java中Volatile关键字详解">
 <meta property="og:url" content="http://yoursite.com/2017/07/08/volatile/index.html">
 <meta property="og:site_name" content="JollyFly&#39;s Blog">
-<meta property="og:description" content="volatile是java中的关键字，在涉及到并发编程时会用到，特地对其特点进行学习与总结，以更好的理解其应用场景以及其中的原理。  相关概念 可见性">
-<meta property="og:updated_time" content="2017-07-08T06:06:40.362Z">
+<meta property="og:description" content="volatile是java中的关键字，在涉及到并发编程时会用到，特地对其特点进行学习与总结，以更好的理解其应用场景以及其中的原理。  相关概念volatile的意思是易变的，不稳定的。这个关键字在java中常用在并发编程中。要想理解这个关键字，首先了解以下三个概念。 原子性原子性这个概念在很多地方都会出现，其概念很多人都很熟悉，但是真正理解，还是要费点时间的。原子性就是在一个或多个操作中，要么全">
+<meta property="og:updated_time" content="2017-07-11T07:35:14.353Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java中Volatile关键字详解">
-<meta name="twitter:description" content="volatile是java中的关键字，在涉及到并发编程时会用到，特地对其特点进行学习与总结，以更好的理解其应用场景以及其中的原理。  相关概念 可见性">
+<meta name="twitter:description" content="volatile是java中的关键字，在涉及到并发编程时会用到，特地对其特点进行学习与总结，以更好的理解其应用场景以及其中的原理。  相关概念volatile的意思是易变的，不稳定的。这个关键字在java中常用在并发编程中。要想理解这个关键字，首先了解以下三个概念。 原子性原子性这个概念在很多地方都会出现，其概念很多人都很熟悉，但是真正理解，还是要费点时间的。原子性就是在一个或多个操作中，要么全">
 
 
 
@@ -416,11 +416,18 @@
 
       
         <blockquote>
-<p>volatile是java中的关键字，在涉及到并发编程时会用到，特地对其特点进行学习与总结，<br>以更好的理解其应用场景以及其中的原理。</p>
+<p>volatile是java中的关键字，在涉及到并发编程时会用到，特地对其特点进行学习与总结，以更好的理解其<br>应用场景以及其中的原理。</p>
 </blockquote>
-<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><ol>
-<li>可见性</li>
-</ol>
+<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><p>volatile的意思是易变的，不稳定的。这个关键字在java中常用在并发编程中。要想理解这个关键字，首先了解以下<br>三个概念。</p>
+<h3 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h3><p>原子性这个概念在很多地方都会出现，其概念很多人都很熟悉，但是真正理解，还是要费点时间的。原子性就是在一个或<br>多个操作中，要么全部执行并且执行的过程是不被其他因素干扰打断的，要么所有操作都不执行。举个简单的例子：<br>i = i + 1,这个操作并不是原子性操作，在执行这句话的时候，会分为三步。1.先取出i的值 2.将i的值加一 3.写入<br>新的值。因此这个语句的操作并不是原子性的。在三步中的任意一步，i的值都有可能被其他线程更改。</p>
+<h3 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h3><p>可见性是指当有多个线程访问同一个变量时，一个线程对这个变量做了修改，其他线程能立即看到修改的值。这里可能比<br>较难理解。举个例子来说明这种情况。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//线程1执行的代码</span></div><div class="line"><span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line"><span class="comment">//线程2执行的代码</span></div><div class="line">j = i;</div></pre></td></tr></table></figure></p>
+<p>CPU在执行语句加载东西时，并不是直接从内存中去读取数据，而是首先将数据加载到cpu的高速缓存中，当数据处理完毕<br>后再传到内存当中。<br>假设执行第一句的线程是CPU1，而执行第二句的是CPU2。当线程1执行 i =10这句时，会先把i的初始值加载到CPU1的高<br>速缓存中，然后赋值为10，那么在CPU1的高速缓存当中i的值变为10了，却没有立即写入到主内存当中。<br>此时线程2执行 j = i，它会先去内存读取i的值并加载到CPU2的缓存当中，注意此时内存当中i的值还是0，那么就会使<br>得j的值为0，而不是10.<br>这就是可见性问题，线程1对变量i修改了之后，线程2没有立即看到线程1修改的值。</p>
+<h3 id="有序性"><a href="#有序性" class="headerlink" title="有序性"></a>有序性</h3><p>Java 语言提供了 volatile 和 synchronized 两个关键字来保证线程之间操作的有序性，volatile对一个变量的写<br>操作先行发生于后面对这个变量的读操作，synchronized 是由“一个变量在同一个时刻只允许一条线程对其进行 lock<br>操作”这条规则获得的，此规则决定了持有同一个对象锁的两个同步块只能串行执行。</p>
+<h2 id="volatile关键字深入探索"><a href="#volatile关键字深入探索" class="headerlink" title="volatile关键字深入探索"></a>volatile关键字深入探索</h2><h3 id="volatile关键字能能保证原子性吗"><a href="#volatile关键字能能保证原子性吗" class="headerlink" title="volatile关键字能能保证原子性吗"></a>volatile关键字能能保证原子性吗</h3><p>demo：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VolatileDemo</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">volatile</span> <span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">()</span></span>&#123;</div><div class="line">        i ++;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span><span class="keyword">throws</span> Exception</span>&#123;</div><div class="line">        VolatileDemo demo = <span class="keyword">new</span> VolatileDemo();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>;j &lt; <span class="number">10</span>; j ++)&#123;</div><div class="line">            <span class="keyword">new</span> Thread(()-&gt;&#123;</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> a = <span class="number">0</span>;a &lt; <span class="number">1000</span>;a ++)&#123;</div><div class="line">                    demo.add();</div><div class="line">                &#125;</div><div class="line">            &#125;).start();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">while</span> (Thread.activeCount()&gt;<span class="number">1</span>)&#123;</div><div class="line">            Thread.yield();</div><div class="line">        &#125;</div><div class="line">        System.out.println(demo.i);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>以上代码的输出结果是一个小于等于10000的数字。因此volatile关键字不具备原子性。对其修饰的变量进行修改，不能保证<br>线程安全。要保证以上代码的线程安全，需要保证add()方法操作的原子性，可以通过使用Lock锁，或者使用synchronized。<br>也可以使用jdk中提供的AtomicInteger。这个类保证了在并发情况下，对数字的自增操作的原子性。</p>
+<blockquote>
+<p>总结，volatile关键字可以保证被其修饰的变量的有序性和可见性，但无法保证其操作的原子性。  </p>
+</blockquote>
 
       
     </div>
@@ -667,7 +674,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#相关概念"><span class="nav-number">1.</span> <span class="nav-text">相关概念</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#相关概念"><span class="nav-number">1.</span> <span class="nav-text">相关概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原子性"><span class="nav-number">1.1.</span> <span class="nav-text">原子性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可见性"><span class="nav-number">1.2.</span> <span class="nav-text">可见性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有序性"><span class="nav-number">1.3.</span> <span class="nav-text">有序性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile关键字深入探索"><span class="nav-number">2.</span> <span class="nav-text">volatile关键字深入探索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#volatile关键字能能保证原子性吗"><span class="nav-number">2.1.</span> <span class="nav-text">volatile关键字能能保证原子性吗</span></a></li></ol></li></ol></div>
             
 
           </div>
