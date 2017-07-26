@@ -4,9 +4,9 @@
   <subtitle>勿在浮沙筑高台</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://yoursite.com/"/>
-  <updated>2017-07-19T10:04:32.521Z</updated>
-  <id>http://yoursite.com/</id>
+  <link href="http://jollyfly.com/"/>
+  <updated>2017-07-26T00:29:10.601Z</updated>
+  <id>http://jollyfly.com/</id>
   
   <author>
     <name>JollyFly</name>
@@ -16,9 +16,96 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>链表问题总结</title>
+    <link href="http://jollyfly.com/2017/07/19/linklist/"/>
+    <id>http://jollyfly.com/2017/07/19/linklist/</id>
+    <published>2017-07-19T01:10:20.000Z</published>
+    <updated>2017-07-26T00:29:10.601Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>链表是非常常见的数据结构，是所有程序设计都比较基础的部分。因此将在复习过程中，将想过内容做一个总结。</p>
+</blockquote>
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>链表由若干个节点组成，每个节点中包含指向其下一个节点的指针，实例如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span></span>&#123;</div><div class="line">    Object data;</div><div class="line">    Node next;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这些节点在物理存储单元上是非连续的，链表的数据插入的时间复杂度为O(1)<br>链表的插入思路如下：</p>
+<ol>
+<li>创建一个节点Node，包含数据</li>
+<li>将上一个节点的next指向新建的节点</li>
+<li>将新建节点的next指向原节点的下一个</li>
+</ol>
+<p>示例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"> /**</div><div class="line"> * 将给定的数据插入到给定节点的后面</div><div class="line"> * Node定义如上</div><div class="line"> */</div><div class="line">void linkafter(Node node,Object data)&#123;</div><div class="line">     //1. 创建一个节点Node，包含数据</div><div class="line">     Node newNode = new Node();</div><div class="line">     newNode.data = data;</div><div class="line">     Node next = node.next;</div><div class="line">     //2. 将上一个节点的next指向新建的节点</div><div class="line">     node.next = newNode;</div><div class="line">     //3. 将新建节点的next指向原节点的下一个</div><div class="line">     newNode.next = next;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>因此在频繁对链表中数据进行操作是，使用这种数据结构能获得较高的性能</p>
+<h2 id="单向链表和双向链表"><a href="#单向链表和双向链表" class="headerlink" title="单向链表和双向链表"></a>单向链表和双向链表</h2><p>单向链表即链表中的每一个节点包含其下一个的指针，如上面定义的节点。而双向链表则每个节点除了记录其下一个指针外，还会记录其上一个指针。例如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span></span>&#123;</div><div class="line">    Object data;</div><div class="line">    Node next;</div><div class="line">    Node prev;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在java中，LinkedList就是一个双向链表</p>
+<h2 id="单向链表的转置"><a href="#单向链表的转置" class="headerlink" title="单向链表的转置"></a>单向链表的转置</h2><p>单向链表的转置意思就是讲一个单向链表，转换为其逆序的链表。<br>一般有两种思路:</p>
+<ol>
+<li><p>使用临时指针在链表上循环。代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">* 参数head为指定要转置的链表的头指针，返回值为新链表的头指针</div><div class="line">*/</div><div class="line">Node reverse(Node head)&#123;</div><div class="line">    //链表中只有一个节点</div><div class="line">    if(head == null || head.next == null)&#123;</div><div class="line">        return head;</div><div class="line">    &#125;</div><div class="line">    Node pre = null;</div><div class="line">    Node next = null;</div><div class="line">    while(head != null)&#123;</div><div class="line">        next = head.next;</div><div class="line">        head.next = pre;</div><div class="line">        pree = head;</div><div class="line">        head = next;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用递归：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Node reverse(Node head)&#123;</div><div class="line">    if(head == null || head.next == null)&#123;</div><div class="line">        return head;</div><div class="line">    &#125;</div><div class="line">    Node newHead = reverse(head.next);</div><div class="line">    head.next.next = head;</div><div class="line">    head.next = null;</div><div class="line">    return newHead;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="链表环问题"><a href="#链表环问题" class="headerlink" title="链表环问题"></a>链表环问题</h2><p>链表有环即在链表中，有两个不同节点中的next指向同一个节点，则链表按照指针排下去，就会在链表中形成一个环状<br>例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">A -&gt; B -&gt; C -&gt; D -&gt; E -&gt; F -&gt; C</div></pre></td></tr></table></figure></p>
+<p>B节点和F节点都会指向C节点，则C、D、E、F就会形成一个环状，指针在移动的时候会在这里一直循环</p>
+<h3 id="判断一个链表是否有环"><a href="#判断一个链表是否有环" class="headerlink" title="判断一个链表是否有环"></a>判断一个链表是否有环</h3><p>根据以上分析，可以使用快慢指针法，快指针每次移动两步，慢指针每次移动一步。如果有环则两个指针一定会在环里相遇<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">//head为第一个节点</div><div class="line">bool hasCricle(Node head)&#123;</div><div class="line">    Node slow;</div><div class="line">    Node fast;</div><div class="line">    slow = fast = head;</div><div class="line">    while(fast != null &amp;&amp; fast.next !=null)&#123;</div><div class="line">        // 移动两步</div><div class="line">        fast = fast.next.next;</div><div class="line">        //移动一步</div><div class="line">        slow = slow.next;</div><div class="line">        //相遇</div><div class="line">        if(fast == slow)&#123;</div><div class="line">            return true</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return false;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="判断一个链表是否有环并找出环入口"><a href="#判断一个链表是否有环并找出环入口" class="headerlink" title="判断一个链表是否有环并找出环入口"></a>判断一个链表是否有环并找出环入口</h3><p><strong>分析</strong>：首先根据上面的判断是否有环。假设有环，设起点head到环入口的距离为x步，设p1为慢指针，p2位快指针，p1与p2在环中的M节点相遇，M点距离环入口a步，环周长为L，p2比p1在环内多走k圈，两指针第一次相遇时假设p1走了n步，则：<br>p1走的步数: n = x + a;<br>p2走的步数：2n = x + a + k <em> L<br>两式相减：n = k </em> L = x + a<br>此时 若两指针都移动k<em>L-a步，就会在环口相遇，而k</em>L-a=x，即p2从头开始以步长1移动，当两指针再次相遇时，即为环口<br>代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">Node loopPort(Node head)&#123;</div><div class="line">    if(head == null || head.next == null)&#123;</div><div class="line">        return null;</div><div class="line">    &#125; </div><div class="line">    Node slow;</div><div class="line">    Node fast;</div><div class="line">    slow = fast = head;</div><div class="line">    while(fast != null &amp;&amp; fast.next !=null)&#123;</div><div class="line">        // 移动两步</div><div class="line">        fast = fast.next.next;</div><div class="line">        //移动一步</div><div class="line">        slow = slow.next;</div><div class="line">        //相遇</div><div class="line">        if(fast == slow)&#123;</div><div class="line">            break;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    //不存在环</div><div class="line">    if(fast != slow)&#123;</div><div class="line">        return null;</div><div class="line">    &#125;</div><div class="line">    //快指针从头开始</div><div class="line">    fast = head;</div><div class="line">    while(fast != slow)&#123;</div><div class="line">        fast = fast.next;</div><div class="line">        slow = slow.next;</div><div class="line">    &#125;</div><div class="line">    return fast;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;链表是非常常见的数据结构，是所有程序设计都比较基础的部分。因此将在复习过程中，将想过内容做一个总结。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;链表&quot;&gt;&lt;a href=&quot;#链表&quot; class=&quot;headerlink&quot; title=&quot;链表&quot;
+    
+    </summary>
+    
+      <category term="编程基础" scheme="http://jollyfly.com/categories/%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="数据结构" scheme="http://jollyfly.com/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+      <category term="链表" scheme="http://jollyfly.com/tags/%E9%93%BE%E8%A1%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Servlet基础</title>
+    <link href="http://jollyfly.com/2017/07/16/servlet/"/>
+    <id>http://jollyfly.com/2017/07/16/servlet/</id>
+    <published>2017-07-16T01:10:20.000Z</published>
+    <updated>2017-07-25T02:07:52.491Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Servlet接口中的方法"><a href="#Servlet接口中的方法" class="headerlink" title="Servlet接口中的方法"></a>Servlet接口中的方法</h1><ol>
+<li><figure class="highlight plain"><figcaption><span>init(ServletConfig config) throws ServletException;```</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">init方法在servlet对象创建时执行</div><div class="line">@parm config 代表该servlet对象</div><div class="line"></div><div class="line">2. ```void service(ServletRequest request,ServletResponse response)``` </div><div class="line">service方法在每次请求时执行</div><div class="line">@parm request 内部封装请求信息</div><div class="line">@parm response 内部封装响应信息</div><div class="line"></div><div class="line">3. ```void destroy()</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>在servlet销毁的时候执行</p>
+<h1 id="HttpServlet"><a href="#HttpServlet" class="headerlink" title="HttpServlet"></a>HttpServlet</h1><blockquote>
+<p>在用自己写Servlet时，通常是继承这个类，实现其中的doGet、doPost等方法</p>
+</blockquote>
+<h2 id="关于restful"><a href="#关于restful" class="headerlink" title="关于restful"></a>关于restful</h2><p>JAX-RS是java的REST服务规范，由javaEE6引入。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Servlet接口中的方法&quot;&gt;&lt;a href=&quot;#Servlet接口中的方法&quot; class=&quot;headerlink&quot; title=&quot;Servlet接口中的方法&quot;&gt;&lt;/a&gt;Servlet接口中的方法&lt;/h1&gt;&lt;ol&gt;
+&lt;li&gt;&lt;figure class=&quot;highl
+    
+    </summary>
+    
+      <category term="java基础" scheme="http://jollyfly.com/categories/java%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="servlet" scheme="http://jollyfly.com/tags/servlet/"/>
+    
+  </entry>
+  
+  <entry>
     <title>使用AOP实现数据库读写分离</title>
-    <link href="http://yoursite.com/2017/07/15/rwseparate/"/>
-    <id>http://yoursite.com/2017/07/15/rwseparate/</id>
+    <link href="http://jollyfly.com/2017/07/15/rwseparate/"/>
+    <id>http://jollyfly.com/2017/07/15/rwseparate/</id>
     <published>2017-07-15T01:00:48.000Z</published>
     <updated>2017-07-19T10:04:32.521Z</updated>
     
@@ -71,21 +158,21 @@
     
     </summary>
     
-      <category term="spring" scheme="http://yoursite.com/categories/spring/"/>
+      <category term="spring" scheme="http://jollyfly.com/categories/spring/"/>
     
     
-      <category term="读写分离" scheme="http://yoursite.com/tags/%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB/"/>
+      <category term="数据库" scheme="http://jollyfly.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
-      <category term="aop" scheme="http://yoursite.com/tags/aop/"/>
+      <category term="读写分离" scheme="http://jollyfly.com/tags/%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB/"/>
     
-      <category term="数据库" scheme="http://yoursite.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+      <category term="aop" scheme="http://jollyfly.com/tags/aop/"/>
     
   </entry>
   
   <entry>
     <title>SpringBoot使用Spring Data JPA</title>
-    <link href="http://yoursite.com/2017/07/13/springbootjpa/"/>
-    <id>http://yoursite.com/2017/07/13/springbootjpa/</id>
+    <link href="http://jollyfly.com/2017/07/13/springbootjpa/"/>
+    <id>http://jollyfly.com/2017/07/13/springbootjpa/</id>
     <published>2017-07-13T07:23:48.000Z</published>
     <updated>2017-07-13T09:22:24.685Z</updated>
     
@@ -110,19 +197,19 @@
     
     </summary>
     
-      <category term="springboot" scheme="http://yoursite.com/categories/springboot/"/>
+      <category term="springboot" scheme="http://jollyfly.com/categories/springboot/"/>
     
     
-      <category term="jpa" scheme="http://yoursite.com/tags/jpa/"/>
+      <category term="jpa" scheme="http://jollyfly.com/tags/jpa/"/>
     
-      <category term="springboot" scheme="http://yoursite.com/tags/springboot/"/>
+      <category term="springboot" scheme="http://jollyfly.com/tags/springboot/"/>
     
   </entry>
   
   <entry>
     <title>Lock和synchronized</title>
-    <link href="http://yoursite.com/2017/07/11/javalock/"/>
-    <id>http://yoursite.com/2017/07/11/javalock/</id>
+    <link href="http://jollyfly.com/2017/07/11/javalock/"/>
+    <id>http://jollyfly.com/2017/07/11/javalock/</id>
     <published>2017-07-11T07:42:34.000Z</published>
     <updated>2017-07-12T00:58:22.926Z</updated>
     
@@ -142,17 +229,17 @@
     
     </summary>
     
-      <category term="多线程" scheme="http://yoursite.com/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+      <category term="多线程" scheme="http://jollyfly.com/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
     
     
-      <category term="lock  并发" scheme="http://yoursite.com/tags/lock-%E5%B9%B6%E5%8F%91/"/>
+      <category term="lock  并发" scheme="http://jollyfly.com/tags/lock-%E5%B9%B6%E5%8F%91/"/>
     
   </entry>
   
   <entry>
     <title>Java中Volatile关键字详解</title>
-    <link href="http://yoursite.com/2017/07/08/volatile/"/>
-    <id>http://yoursite.com/2017/07/08/volatile/</id>
+    <link href="http://jollyfly.com/2017/07/08/volatile/"/>
+    <id>http://jollyfly.com/2017/07/08/volatile/</id>
     <published>2017-07-08T07:50:28.000Z</published>
     <updated>2017-07-11T07:35:14.353Z</updated>
     
@@ -180,19 +267,19 @@
     
     </summary>
     
-      <category term="java基础" scheme="http://yoursite.com/categories/java%E5%9F%BA%E7%A1%80/"/>
+      <category term="java基础" scheme="http://jollyfly.com/categories/java%E5%9F%BA%E7%A1%80/"/>
     
     
-      <category term="java基础" scheme="http://yoursite.com/tags/java%E5%9F%BA%E7%A1%80/"/>
+      <category term="java基础" scheme="http://jollyfly.com/tags/java%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="并发" scheme="http://yoursite.com/tags/%E5%B9%B6%E5%8F%91/"/>
+      <category term="并发" scheme="http://jollyfly.com/tags/%E5%B9%B6%E5%8F%91/"/>
     
   </entry>
   
   <entry>
     <title>linux下安装rabbitMQ</title>
-    <link href="http://yoursite.com/2017/07/08/rabbitmq-install/"/>
-    <id>http://yoursite.com/2017/07/08/rabbitmq-install/</id>
+    <link href="http://jollyfly.com/2017/07/08/rabbitmq-install/"/>
+    <id>http://jollyfly.com/2017/07/08/rabbitmq-install/</id>
     <published>2017-07-08T03:50:48.000Z</published>
     <updated>2017-07-12T00:15:56.034Z</updated>
     
@@ -234,17 +321,17 @@
     
     </summary>
     
-      <category term="软件安装" scheme="http://yoursite.com/categories/%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85/"/>
+      <category term="软件安装" scheme="http://jollyfly.com/categories/%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85/"/>
     
     
-      <category term="mq" scheme="http://yoursite.com/tags/mq/"/>
+      <category term="mq" scheme="http://jollyfly.com/tags/mq/"/>
     
   </entry>
   
   <entry>
     <title>redis学习与总结</title>
-    <link href="http://yoursite.com/2017/07/07/redis/"/>
-    <id>http://yoursite.com/2017/07/07/redis/</id>
+    <link href="http://jollyfly.com/2017/07/07/redis/"/>
+    <id>http://jollyfly.com/2017/07/07/redis/</id>
     <published>2017-07-07T08:50:48.000Z</published>
     <updated>2017-07-10T05:46:32.512Z</updated>
     
@@ -314,19 +401,19 @@
     
     </summary>
     
-      <category term="学习笔记" scheme="http://yoursite.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="学习笔记" scheme="http://jollyfly.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="redis" scheme="http://yoursite.com/tags/redis/"/>
+      <category term="redis" scheme="http://jollyfly.com/tags/redis/"/>
     
-      <category term="nosql" scheme="http://yoursite.com/tags/nosql/"/>
+      <category term="nosql" scheme="http://jollyfly.com/tags/nosql/"/>
     
   </entry>
   
   <entry>
     <title>NIO学习与总结</title>
-    <link href="http://yoursite.com/2017/07/07/nio/"/>
-    <id>http://yoursite.com/2017/07/07/nio/</id>
+    <link href="http://jollyfly.com/2017/07/07/nio/"/>
+    <id>http://jollyfly.com/2017/07/07/nio/</id>
     <published>2017-07-07T08:50:48.000Z</published>
     <updated>2017-07-07T09:02:50.594Z</updated>
     
@@ -390,19 +477,19 @@
     
     </summary>
     
-      <category term="学习笔记" scheme="http://yoursite.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="学习笔记" scheme="http://jollyfly.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
-      <category term="java基础" scheme="http://yoursite.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/java%E5%9F%BA%E7%A1%80/"/>
+      <category term="java基础" scheme="http://jollyfly.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/java%E5%9F%BA%E7%A1%80/"/>
     
     
-      <category term="nio" scheme="http://yoursite.com/tags/nio/"/>
+      <category term="nio" scheme="http://jollyfly.com/tags/nio/"/>
     
   </entry>
   
   <entry>
     <title>mysql学习与总结</title>
-    <link href="http://yoursite.com/2017/07/07/mysql/"/>
-    <id>http://yoursite.com/2017/07/07/mysql/</id>
+    <link href="http://jollyfly.com/2017/07/07/mysql/"/>
+    <id>http://jollyfly.com/2017/07/07/mysql/</id>
     <published>2017-07-07T07:23:48.000Z</published>
     <updated>2017-07-10T05:46:32.334Z</updated>
     
@@ -571,19 +658,19 @@
     
     </summary>
     
-      <category term="学习笔记" scheme="http://yoursite.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="学习笔记" scheme="http://jollyfly.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="数据库" scheme="http://yoursite.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+      <category term="mysql" scheme="http://jollyfly.com/tags/mysql/"/>
     
-      <category term="mysql" scheme="http://yoursite.com/tags/mysql/"/>
+      <category term="数据库" scheme="http://jollyfly.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
   </entry>
   
   <entry>
     <title>随笔</title>
-    <link href="http://yoursite.com/2017/07/07/first/"/>
-    <id>http://yoursite.com/2017/07/07/first/</id>
+    <link href="http://jollyfly.com/2017/07/07/first/"/>
+    <id>http://jollyfly.com/2017/07/07/first/</id>
     <published>2017-07-07T06:23:48.000Z</published>
     <updated>2017-07-07T07:49:02.207Z</updated>
     
@@ -597,10 +684,10 @@
     
     </summary>
     
-      <category term="日记" scheme="http://yoursite.com/categories/%E6%97%A5%E8%AE%B0/"/>
+      <category term="日记" scheme="http://jollyfly.com/categories/%E6%97%A5%E8%AE%B0/"/>
     
     
-      <category term="随笔" scheme="http://yoursite.com/tags/%E9%9A%8F%E7%AC%94/"/>
+      <category term="随笔" scheme="http://jollyfly.com/tags/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
