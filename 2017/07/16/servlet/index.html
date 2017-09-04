@@ -96,7 +96,7 @@
 <meta property="og:url" content="http://jollyfly.com/2017/07/16/servlet/index.html">
 <meta property="og:site_name" content="JollyFly&#39;s Blog">
 <meta property="og:description" content="Servlet接口中的方法 init(ServletConfig config) throws ServletException;```123456789init方法在servlet对象创建时执行@parm config 代表该servlet对象2. ```void service(ServletRequest request,ServletResponse response)``` servic">
-<meta property="og:updated_time" content="2017-07-25T02:07:52.491Z">
+<meta property="og:updated_time" content="2017-08-11T01:47:11.579Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Servlet基础">
 <meta name="twitter:description" content="Servlet接口中的方法 init(ServletConfig config) throws ServletException;```123456789init方法在servlet对象创建时执行@parm config 代表该servlet对象2. ```void service(ServletRequest request,ServletResponse response)``` servic">
@@ -184,7 +184,7 @@
       </a>
     </div>
       
-        <p class="site-subtitle">勿在浮沙筑高台</p>
+        <h1 class="site-subtitle" itemprop="description">勿在浮沙筑高台</h1>
       
   </div>
 
@@ -255,43 +255,9 @@
       
 
       
-        <li class="menu-item menu-item-search">
-          
-            <a href="javascript:;" class="popup-trigger">
-          
-            
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
-            
-            搜索
-          </a>
-        </li>
-      
     </ul>
   
 
-  
-    <div class="site-search">
-      
-  <div class="popup search-popup local-search-popup">
-  <div class="local-search-header clearfix">
-    <span class="search-icon">
-      <i class="fa fa-search"></i>
-    </span>
-    <span class="popup-btn-close">
-      <i class="fa fa-times-circle"></i>
-    </span>
-    <div class="local-search-input-wrapper">
-      <input autocapitalize="off" autocomplete="off" autocorrect="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
-    </div>
-  </div>
-  <div id="local-search-result"></div>
-</div>
-
-
-
-    </div>
   
 </nav>
 
@@ -333,14 +299,14 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
             
             
               
                 Servlet基础
               
             
-          </h1>
+          </h2>
         
 
         <div class="post-meta">
@@ -388,6 +354,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/07/16/servlet/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/07/16/servlet/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -420,10 +397,73 @@
 </li>
 </ol>
 <p>在servlet销毁的时候执行</p>
-<h1 id="HttpServlet"><a href="#HttpServlet" class="headerlink" title="HttpServlet"></a>HttpServlet</h1><blockquote>
-<p>在用自己写Servlet时，通常是继承这个类，实现其中的doGet、doPost等方法</p>
-</blockquote>
-<h2 id="关于restful"><a href="#关于restful" class="headerlink" title="关于restful"></a>关于restful</h2><p>JAX-RS是java的REST服务规范，由javaEE6引入。</p>
+<h1 id="HttpServlet"><a href="#HttpServlet" class="headerlink" title="HttpServlet"></a>HttpServlet</h1><p> 在用自己写Servlet时，通常是继承这个类，实现其中的doGet、doPost等方法</p>
+<h2 id="关于restful"><a href="#关于restful" class="headerlink" title="关于restful"></a>关于restful</h2><p>JAX-RS是java的REST服务规范，由javaEE6引入。<br>restful通过四种请求：POST、DELETE、PUT、GET分别对应对服务器资源的增删改查操作。</p>
+<h2 id="url-pattern的配置"><a href="#url-pattern的配置" class="headerlink" title="url-pattern的配置"></a>url-pattern的配置</h2><ol>
+<li>完全路径匹配   /</li>
+<li>目录匹配 以/开始，需要以<em>结束  例如：/aaa/bbb/</em></li>
+<li>扩展名匹配 不能以/开始  以<em>开始  例如 </em>.do   <em>.json   </em>.xml    错误写法  /*.do</li>
+<li>缺省路径  /<br>通常情况下，访问html页面时，首先从当前web项目的web.xml文件寻找匹配路径，如果没有找到 再从tomcat默认的web.xml配置，将使用缺省servlet<br>tomcat获取匹配路径时优先级顺序为 1〉2〉3〉4</li>
+</ol>
+<h2 id="ServletContext"><a href="#ServletContext" class="headerlink" title="ServletContext"></a>ServletContext</h2><p>服务器启动的时候，会为每个WEB应用创建一个单独的ServletContext对象。可使用如下方法向ServletContext中存取数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">//存数据</div><div class="line">void setAttribute(String name,Object obj)</div><div class="line">//取数据</div><div class="line">Object getAttribute(String name)</div><div class="line">//移除数据</div><div class="line">void removeAttribute(String name)</div></pre></td></tr></table></figure>
+<h2 id="ServletConfig-获取Servlet的配置信息"><a href="#ServletConfig-获取Servlet的配置信息" class="headerlink" title="ServletConfig 获取Servlet的配置信息"></a>ServletConfig 获取Servlet的配置信息</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">String getInitParameter(String name);</div><div class="line">Enumeration&lt;String&gt; getInitParameterNames();</div><div class="line">ServletContext getServletContext();</div><div class="line">String getServletName();</div></pre></td></tr></table></figure>
+<h1 id="JSP"><a href="#JSP" class="headerlink" title="JSP"></a>JSP</h1><h2 id="JSP内置对象"><a href="#JSP内置对象" class="headerlink" title="JSP内置对象"></a>JSP内置对象</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">名称</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">out</td>
+<td style="text-align:center">javax.servlet.jsp.JspWriter</td>
+<td style="text-align:center">用于页面输出</td>
+</tr>
+<tr>
+<td style="text-align:center">request</td>
+<td style="text-align:center">javax.servlet.http<br>.HttpServletRequest</td>
+<td style="text-align:center">得到用户请求信息</td>
+</tr>
+<tr>
+<td style="text-align:center">response</td>
+<td style="text-align:center">javax.servlet.http<br>.HttpServletResponse</td>
+<td style="text-align:center">服务器向客户端的响应信息</td>
+</tr>
+<tr>
+<td style="text-align:center">config</td>
+<td style="text-align:center">javax.servlet.ServletConfig</td>
+<td style="text-align:center">服务器配置，可以取得初始化参数</td>
+</tr>
+<tr>
+<td style="text-align:center">session</td>
+<td style="text-align:center">javax.servlet.http.HttpSession</td>
+<td style="text-align:center">保存用户信息</td>
+</tr>
+<tr>
+<td style="text-align:center">application</td>
+<td style="text-align:center">javax.servlet.ServletContext</td>
+<td style="text-align:center">保存所有用户共享的信息</td>
+</tr>
+<tr>
+<td style="text-align:center">page</td>
+<td style="text-align:center">java.lang.Object</td>
+<td style="text-align:center">指当前页面转换后的Servlet类的实例</td>
+</tr>
+<tr>
+<td style="text-align:center">pageContext</td>
+<td style="text-align:center">javax.servlet.jsp.PageContext</td>
+<td style="text-align:center">jsp页面的容器</td>
+</tr>
+<tr>
+<td style="text-align:center">exception</td>
+<td style="text-align:center">java.lang.Throwable</td>
+<td style="text-align:center">表示JSP页面所发生的异常，在错误页中才起作用</td>
+</tr>
+</tbody>
+</table>
 
       
     </div>
@@ -438,27 +478,6 @@
     <div>
       
         
-  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
-    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
-    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
-      <span>赏</span>
-    </button>
-    <div id="QR" style="display: none;">
-      
-        <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="/images/wechatpay.jpg" alt="JollyFly WeChat Pay"/>
-          <p>微信打赏</p>
-        </div>
-      
-      
-        <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="/images/alipay.jpg" alt="JollyFly Alipay"/>
-          <p>支付宝打赏</p>
-        </div>
-      
-    </div>
-  </div>
-
 
       
     </div>
@@ -487,8 +506,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/07/15/rwseparate/" rel="next" title="使用AOP实现数据库读写分离">
-                <i class="fa fa-chevron-left"></i> 使用AOP实现数据库读写分离
+              <a href="/2017/07/15/redislock/" rel="next" title="redis实现分布式锁">
+                <i class="fa fa-chevron-left"></i> redis实现分布式锁
               </a>
             
           </div>
@@ -531,7 +550,12 @@
           
   <div class="comments" id="comments">
     
-      <div id="uyan_frame"></div>
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
     
   </div>
 
@@ -571,15 +595,15 @@
                alt="JollyFly" />
           <p class="site-author-name" itemprop="name">JollyFly</p>
            
-              <p class="site-description motion-element" itemprop="description">勿在浮沙筑高台</p>
-          
+              <p class="site-description motion-element" itemprop="description"></p>
+           
         </div>
         <nav class="site-state motion-element">
 
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -590,7 +614,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -601,7 +625,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -654,7 +678,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Servlet接口中的方法"><span class="nav-number">1.</span> <span class="nav-text">Servlet接口中的方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HttpServlet"><span class="nav-number">2.</span> <span class="nav-text">HttpServlet</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于restful"><span class="nav-number">2.1.</span> <span class="nav-text">关于restful</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Servlet接口中的方法"><span class="nav-number">1.</span> <span class="nav-text">Servlet接口中的方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HttpServlet"><span class="nav-number">2.</span> <span class="nav-text">HttpServlet</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于restful"><span class="nav-number">2.1.</span> <span class="nav-text">关于restful</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#url-pattern的配置"><span class="nav-number">2.2.</span> <span class="nav-text">url-pattern的配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ServletContext"><span class="nav-number">2.3.</span> <span class="nav-text">ServletContext</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ServletConfig-获取Servlet的配置信息"><span class="nav-number">2.4.</span> <span class="nav-text">ServletConfig 获取Servlet的配置信息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JSP"><span class="nav-number">3.</span> <span class="nav-text">JSP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JSP内置对象"><span class="nav-number">3.1.</span> <span class="nav-text">JSP内置对象</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -811,6 +835,26 @@
 
   
 
+    
+      <script id="dsq-count-scr" src="https://jollyfly-me.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://jollyfly.com/2017/07/16/servlet/';
+          this.page.identifier = '2017/07/16/servlet/';
+          this.page.title = 'Servlet基础';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://jollyfly-me.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
 
 
 
@@ -827,14 +871,6 @@
 
 
   
-    
-
-    
-      <!-- UY BEGIN -->
-      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2138289"></script>
-      <!-- UY END -->
-    
-  
 
 
 
@@ -848,132 +884,6 @@
 
 
   
-
-  <script type="text/javascript">
-    // Popup Window;
-    var isfetched = false;
-    // Search DB path;
-    var search_path = "";
-    if (search_path.length == 0) {
-      search_path = "search.xml";
-    }
-    var path = "/" + search_path;
-    // monitor main search box;
-
-    function proceedsearch() {
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
-        .css('overflow', 'hidden');
-      $('.popup').toggle();
-    }
-    // search function;
-    var searchFunc = function(path, search_id, content_id) {
-      'use strict';
-      $.ajax({
-        url: path,
-        dataType: "xml",
-        async: true,
-        success: function( xmlResponse ) {
-          // get the contents from search data
-          isfetched = true;
-          $('.popup').detach().appendTo('.header-inner');
-          var datas = $( "entry", xmlResponse ).map(function() {
-            return {
-              title: $( "title", this ).text(),
-              content: $("content",this).text(),
-              url: $( "url" , this).text()
-            };
-          }).get();
-          var $input = document.getElementById(search_id);
-          var $resultContent = document.getElementById(content_id);
-          $input.addEventListener('input', function(){
-            var matchcounts = 0;
-            var str='<ul class=\"search-result-list\">';
-            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-            $resultContent.innerHTML = "";
-            if (this.value.trim().length > 1) {
-              // perform local searching
-              datas.forEach(function(data) {
-                var isMatch = false;
-                var content_index = [];
-                var data_title = data.title.trim().toLowerCase();
-                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
-                var data_url = decodeURIComponent(data.url);
-                var index_title = -1;
-                var index_content = -1;
-                var first_occur = -1;
-                // only match artiles with not empty titles and contents
-                if(data_title != '') {
-                  keywords.forEach(function(keyword, i) {
-                    index_title = data_title.indexOf(keyword);
-                    index_content = data_content.indexOf(keyword);
-                    if( index_title >= 0 || index_content >= 0 ){
-                      isMatch = true;
-                      if (i == 0) {
-                        first_occur = index_content;
-                      }
-                    }
-
-                  });
-                }
-                // show search results
-                if (isMatch) {
-                  matchcounts += 1;
-                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
-                  var content = data.content.trim().replace(/<[^>]+>/g,"");
-                  if (first_occur >= 0) {
-                    // cut out 100 characters
-                    var start = first_occur - 20;
-                    var end = first_occur + 80;
-                    if(start < 0){
-                      start = 0;
-                    }
-                    if(start == 0){
-                      end = 50;
-                    }
-                    if(end > content.length){
-                      end = content.length;
-                    }
-                    var match_content = content.substring(start, end);
-                    // highlight all keywords
-                    keywords.forEach(function(keyword){
-                      var regS = new RegExp(keyword, "gi");
-                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
-                    });
-
-                    str += "<p class=\"search-result\">" + match_content +"...</p>"
-                  }
-                  str += "</li>";
-                }
-              })};
-            str += "</ul>";
-            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
-            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
-            $resultContent.innerHTML = str;
-          });
-          proceedsearch();
-        }
-      });}
-
-    // handle and trigger popup window;
-    $('.popup-trigger').click(function(e) {
-      e.stopPropagation();
-      if (isfetched == false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-    });
-
-    $('.popup-btn-close').click(function(e){
-      $('.popup').hide();
-      $(".local-search-pop-overlay").remove();
-      $('body').css('overflow', '');
-    });
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-  </script>
 
 
 

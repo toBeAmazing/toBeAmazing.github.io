@@ -89,17 +89,17 @@
 
 
 
-<meta name="description" content="1.数据库范式 第一范式（1NF）： 第一范式强调的是列的原子性，即列不能够再分成其他几列。   第二范式（2NF）： 首先要满足第一范式的要求，另外包含两部分内容，一是表必须有主键；二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。例如一个订单明细表（OrderId，ProductId，Quantity，UnitPrice）在这张表中，单单通过一个OrderId是不足以成为">
+<meta name="description" content="1.数据库范式 第一范式（1NF）：第一范式强调的是列的原子性，即列不能够再分成其他几列。 第二范式（2NF）：首先要满足第一范式的要求，另外包含两部分内容，一是表必须有主键；二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。例如一个订单明细表（OrderId，ProductId，Quantity，UnitPrice）在这张表中，单单通过一个OrderId是不足以成为主键的，">
 <meta name="keywords" content="mysql,数据库">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mysql学习与总结">
 <meta property="og:url" content="http://jollyfly.com/2017/07/07/mysql/index.html">
 <meta property="og:site_name" content="JollyFly&#39;s Blog">
-<meta property="og:description" content="1.数据库范式 第一范式（1NF）： 第一范式强调的是列的原子性，即列不能够再分成其他几列。   第二范式（2NF）： 首先要满足第一范式的要求，另外包含两部分内容，一是表必须有主键；二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。例如一个订单明细表（OrderId，ProductId，Quantity，UnitPrice）在这张表中，单单通过一个OrderId是不足以成为">
-<meta property="og:updated_time" content="2017-07-10T05:46:32.334Z">
+<meta property="og:description" content="1.数据库范式 第一范式（1NF）：第一范式强调的是列的原子性，即列不能够再分成其他几列。 第二范式（2NF）：首先要满足第一范式的要求，另外包含两部分内容，一是表必须有主键；二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。例如一个订单明细表（OrderId，ProductId，Quantity，UnitPrice）在这张表中，单单通过一个OrderId是不足以成为主键的，">
+<meta property="og:updated_time" content="2017-08-11T01:57:48.852Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql学习与总结">
-<meta name="twitter:description" content="1.数据库范式 第一范式（1NF）： 第一范式强调的是列的原子性，即列不能够再分成其他几列。   第二范式（2NF）： 首先要满足第一范式的要求，另外包含两部分内容，一是表必须有主键；二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。例如一个订单明细表（OrderId，ProductId，Quantity，UnitPrice）在这张表中，单单通过一个OrderId是不足以成为">
+<meta name="twitter:description" content="1.数据库范式 第一范式（1NF）：第一范式强调的是列的原子性，即列不能够再分成其他几列。 第二范式（2NF）：首先要满足第一范式的要求，另外包含两部分内容，一是表必须有主键；二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。例如一个订单明细表（OrderId，ProductId，Quantity，UnitPrice）在这张表中，单单通过一个OrderId是不足以成为主键的，">
 
 
 
@@ -184,7 +184,7 @@
       </a>
     </div>
       
-        <p class="site-subtitle">勿在浮沙筑高台</p>
+        <h1 class="site-subtitle" itemprop="description">勿在浮沙筑高台</h1>
       
   </div>
 
@@ -255,43 +255,9 @@
       
 
       
-        <li class="menu-item menu-item-search">
-          
-            <a href="javascript:;" class="popup-trigger">
-          
-            
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
-            
-            搜索
-          </a>
-        </li>
-      
     </ul>
   
 
-  
-    <div class="site-search">
-      
-  <div class="popup search-popup local-search-popup">
-  <div class="local-search-header clearfix">
-    <span class="search-icon">
-      <i class="fa fa-search"></i>
-    </span>
-    <span class="popup-btn-close">
-      <i class="fa fa-times-circle"></i>
-    </span>
-    <div class="local-search-input-wrapper">
-      <input autocapitalize="off" autocomplete="off" autocorrect="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
-    </div>
-  </div>
-  <div id="local-search-result"></div>
-</div>
-
-
-
-    </div>
   
 </nav>
 
@@ -333,14 +299,14 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
             
             
               
                 mysql学习与总结
               
             
-          </h1>
+          </h2>
         
 
         <div class="post-meta">
@@ -388,6 +354,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/07/07/mysql/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/07/07/mysql/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -416,22 +393,11 @@
 
       
         <h3 id="1-数据库范式"><a href="#1-数据库范式" class="headerlink" title="1.数据库范式"></a>1.数据库范式</h3><ol>
-<li>第一范式（1NF）：<blockquote>
-<p>第一范式强调的是列的原子性，即列不能够再分成其他几列。</p>
-</blockquote>
-</li>
-<li>第二范式（2NF）：<blockquote>
-<p>首先要满足第一范式的要求，另外包含两部分内容，一是表必须有主键；<br>二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。<br>例如一个订单明细表（OrderId，ProductId，Quantity，UnitPrice）<br><br>在这张表中，单单通过一个OrderId是不足以成为主键的，主键应该是（OrderId,ProductId）<br>可以将表拆分为（OrderId,ProductId,Quantity）和（ProductId,UnitPrice）</p>
-</blockquote>
-</li>
-<li>第三范式（3NF）：<blockquote>
-<p>首先是要满足2NF，另外非主键列必须直接依赖于主键，不能存在传递依赖。即不能存在：非主键列 A 依赖于非主键列 B，非主键列B依赖于主键的情况。<br><br>例如一个订单表【Order】（OrderID，OrderDate，CustomerID，CustomerName，CustomerAddr，CustomerCity）主键是（OrderID）。<br>其中 OrderDate，CustomerID，CustomerName，CustomerAddr，CustomerCity 等非主键列都完全依赖于主键（OrderID），所以符合 2NF。不过问题是 CustomerName，CustomerAddr，CustomerCity 直接依赖的是 CustomerID（非主键列），而不是直接依赖于主键，它是通过传递才依赖于主键，所以不符合 3NF。<br>通过拆分【Order】为【Order】（OrderID，OrderDate，CustomerID）和【Customer】（CustomerID，CustomerName，CustomerAddr，CustomerCity）从而达到 3NF。</p>
-</blockquote>
-</li>
+<li>第一范式（1NF）：<br>第一范式强调的是列的原子性，即列不能够再分成其他几列。</li>
+<li>第二范式（2NF）：<br>首先要满足第一范式的要求，另外包含两部分内容，一是表必须有主键；<br>二是没有包含在主键中的列必须完全依赖于主键，而不能只依赖于主键的一部分。<br>例如一个订单明细表（OrderId，ProductId，Quantity，UnitPrice）<br><br>在这张表中，单单通过一个OrderId是不足以成为主键的，主键应该是（OrderId,ProductId）<br>可以将表拆分为（OrderId,ProductId,Quantity）和（ProductId,UnitPrice）</li>
+<li>第三范式（3NF）：<br>首先是要满足2NF，另外非主键列必须直接依赖于主键，不能存在传递依赖。即不能存在：非主键列 A 依赖于非主键列 B，非主键列B依赖于主键的情况。<br><br>例如一个订单表【Order】（OrderID，OrderDate，CustomerID，CustomerName，CustomerAddr，CustomerCity）主键是（OrderID）。<br>其中 OrderDate，CustomerID，CustomerName，CustomerAddr，CustomerCity 等非主键列都完全依赖于主键（OrderID），所以符合 2NF。不过问题是 CustomerName，CustomerAddr，CustomerCity 直接依赖的是 CustomerID（非主键列），而不是直接依赖于主键，它是通过传递才依赖于主键，所以不符合 3NF。<br>通过拆分【Order】为【Order】（OrderID，OrderDate，CustomerID）和【Customer】（CustomerID，CustomerName，CustomerAddr，CustomerCity）从而达到 3NF。</li>
 </ol>
-<h3 id="2-索引基础"><a href="#2-索引基础" class="headerlink" title="2.索引基础"></a>2.索引基础</h3><h4 id="B-Tree索引"><a href="#B-Tree索引" class="headerlink" title="B-Tree索引"></a>B-Tree索引</h4><blockquote>
-<p>B-Tree索引能够加快访问数据的速度，因为存储引擎不再需要进行全表扫描来获取需要的数据，<br>取而代之的是从索引的根节点(图示并未画出)开始进行搜索。根节点的槽中存放了指向子节点的指针，<br>存储引擎根据这些指针向下层查找。通过比较节点页的值和要查找的值可以找到合适的指针进入下层<br>子节点，这些指针实际上定义了子节点页中值的上限和下限。最终存储引擎要么是找到对应的值，要么<br>该记录不存在。<br><br>索引对多个值进行排序的依据是CREATE TABLE语句中定义索引时列的顺序。<br>例：假设有如下数据表：<br>CREATE TABLE People(<br>    last_name  varchar(50)   not null,<br>    first_name varchar(50)   not null,<br>    dob        date             not null,<br>    gender       enum(‘m’,’f’) not null,<br>    key(last_name, first_name, dob)<br>);</p>
-</blockquote>
+<h3 id="2-索引基础"><a href="#2-索引基础" class="headerlink" title="2.索引基础"></a>2.索引基础</h3><h4 id="B-Tree索引"><a href="#B-Tree索引" class="headerlink" title="B-Tree索引"></a>B-Tree索引</h4><p>B-Tree索引能够加快访问数据的速度，因为存储引擎不再需要进行全表扫描来获取需要的数据，<br>取而代之的是从索引的根节点(图示并未画出)开始进行搜索。根节点的槽中存放了指向子节点的指针，<br>存储引擎根据这些指针向下层查找。通过比较节点页的值和要查找的值可以找到合适的指针进入下层<br>子节点，这些指针实际上定义了子节点页中值的上限和下限。最终存储引擎要么是找到对应的值，要么<br>该记录不存在。<br><br>索引对多个值进行排序的依据是CREATE TABLE语句中定义索引时列的顺序。<br>例：假设有如下数据表：<br>CREATE TABLE People(<br>    last_name  varchar(50)   not null,<br>    first_name varchar(50)   not null,<br>    dob        date             not null,<br>    gender       enum(‘m’,’f’) not null,<br>    key(last_name, first_name, dob)<br>);</p>
 <p>对于表中的每一行数据，索引中包含了last_name,first_name和dob列的值。<br>可以使用B-Tree索引的查询类型。B-Tree索引适用于全键值、键值范围或键前缀查找。其中键前缀查找<br>只适用于根据最左前缀的查找。上面所述的索引对如下类型的查询有效。</p>
 <ol>
 <li>全值匹配<br><br>全值匹配指的是和索引中的所有列进行匹配，例如前面提到的索引可用于查找姓名为 Cuba Allen、<br>出生于1960-01-01的人。</li>
@@ -446,9 +412,7 @@
 <li>不能跳过索引中的列。</li>
 <li>如果查询中有某个列的范围查询，则其右边所有列都无法使用索引优化查找。</li>
 </ol>
-<h5 id="典型优化："><a href="#典型优化：" class="headerlink" title="典型优化："></a>典型优化：</h5><blockquote>
-<p>使用B-Tree存储URL，因为URL一般比较长，因此数据量大的时候，查询会变得缓<br> 慢。若删除原来URL列上的索引，而新增一个被索引的url_crc列，使用CRC32做<br> 哈希，就可以使用下面的方式查询：</p>
-</blockquote>
+<h5 id="典型优化："><a href="#典型优化：" class="headerlink" title="典型优化："></a>典型优化：</h5><p>使用B-Tree存储URL，因为URL一般比较长，因此数据量大的时候，查询会变得缓<br> 慢。若删除原来URL列上的索引，而新增一个被索引的url_crc列，使用CRC32做<br> 哈希，就可以使用下面的方式查询：</p>
  <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"> #原查询语句：</div><div class="line">   SELECT id FROM url WHERE url='http://www.mysql.com';</div><div class="line">#修改后的语句：</div><div class="line">   SELECT id FROM url WHERE url='http://www.mysql.com'</div><div class="line">                 AND url_crc=CRC32('http://www.mysql.com');</div></pre></td></tr></table></figure>
 <blockquote>
 <p>这样做的性能会非常高，因为MySQL优化器会使用这个选择性很高而体积很小的基于url_crc列的索引<br>来完成查找。即使有多个记录有相同的索引值，查找仍然很快，只需要根据哈希值做快速的整数比较就能<br>找到索引条目，然后一一比较返回对应的行。可以使用触发器来维护哈希值，例：</p>
@@ -456,39 +420,29 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#创建表</div><div class="line">    CREATE TABLE pseudohash(</div><div class="line">        id int unsigned NOT NULL auto_increment,</div><div class="line">        url varchar(255) NOT NULL,</div><div class="line">        url_crc int unsigned NOT NULL DEFAULT 0,</div><div class="line">        PRIMARY KEY(id);</div><div class="line">    );</div><div class="line">#创建触发器</div><div class="line">    CREATE TRIGGER pseudohash_crc_ins BEFORE INSERT ON pseudohash FOR EACH ROW BEGIN</div><div class="line">    SET NEW.url_crc=CRC32(NEW.url);</div><div class="line">    END;</div><div class="line"></div><div class="line">    CREATE TRIGGER pseudohash_crc_ins BEFORE UPDATE ON pseudohash FOR EACH ROW BEGIN</div><div class="line">    SET NEW.url_crc=CRC32(NEW.url);</div><div class="line">    END;</div></pre></td></tr></table></figure>
 <p> #####高性能的索引使用策略</p>
 <ol>
-<li>独立的列<blockquote>
-<p>一些不恰当的查询会使MySQL无法使用已有的索引，如果查询中的列不是独立的<br>列，则MySQL就不会使用索引。“独立的列”是指索引列不能是表达式的一部分，<br>也不能是函数的参数。例：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> actor_id <span class="keyword">FROM</span> sakila.actor</div><div class="line">    <span class="keyword">WHERE</span> actor_id + <span class="number">1</span> = <span class="number">5</span>;</div></pre></td></tr></table></figure>
-</blockquote>
+<li>独立的列<br>一些不恰当的查询会使MySQL无法使用已有的索引，如果查询中的列不是独立的<br>列，则MySQL就不会使用索引。“独立的列”是指索引列不能是表达式的一部分，<br>也不能是函数的参数。例：<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> actor_id <span class="keyword">FROM</span> sakila.actor</div><div class="line">    <span class="keyword">WHERE</span> actor_id + <span class="number">1</span> = <span class="number">5</span>;</div></pre></td></tr></table></figure>
 </li>
 </ol>
 <p>  凭肉眼就能看出WHERE中的表达式其实等价于actor_id = 4，但是MySQL无法自<br>  动解析这个方程式。另一个常见的错误：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> ... <span class="keyword">WHERE</span> <span class="keyword">TO_DAYS</span>(<span class="keyword">CURRENT_DATE</span>)</div><div class="line">    - <span class="keyword">TO_DAYS</span>(date_col) &lt;= <span class="number">10</span>;</div></pre></td></tr></table></figure>
 <ol>
-<li><p>前缀索引和索引选择性</p>
-<blockquote>
-<p>如果索引列的字符串很长，索引会变得大且慢。通常可以索引开始部分的字符，这样可以大大节约索引<br>空间，从而提高索引效率。但这样也会降低索引的选择性。对于BLOB、TEXT或者很长的VARCHAR类型的列，<br>必须使用前缀索引，因为MySQL不允许索引这些列完整的长度。创建索引的SQL:</p>
+<li><p>前缀索引和索引选择性<br>如果索引列的字符串很长，索引会变得大且慢。通常可以索引开始部分的字符，这样可以大大节约索引<br>空间，从而提高索引效率。但这样也会降低索引的选择性。对于BLOB、TEXT或者很长的VARCHAR类型的列，<br>必须使用前缀索引，因为MySQL不允许索引这些列完整的长度。创建索引的SQL:</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> sakila.city_demo <span class="keyword">ADD</span> <span class="keyword">KEY</span> (city(<span class="number">7</span>));</div></pre></td></tr></table></figure>
-</blockquote>
 </li>
-<li><p>多列索引</p>
-<blockquote>
-<p>很多人对多列索引的理解都不够，一个常见的错误就是，为每个列创建独立的索引，或者按照错误的<br>顺序创建多列索引。</p>
+<li><p>多列索引<br>很多人对多列索引的理解都不够，一个常见的错误就是，为每个列创建独立的索引，或者按照错误的<br>顺序创建多列索引。</p>
 <ul>
 <li>当出现服务器对多个索引做相交操作时(通常有多个AND条件)，通常意味着需要一个包含所有相关<br>列的多列索引，而不是多个独立的单列索引。</li>
 <li>当服务器需要对多个索引做联合操作时(通常有多个OR条件)，通常需要消耗大量的CPU和内存资源<br>在算法的缓存、排序和合并操作上。特别是当其中有些索引的选择性不高，需要合并扫描返回的大量<br>数据的时候。</li>
 </ul>
-</blockquote>
 </li>
-<li>重复索引：<br>&gt;<ol>
+<li><p>重复索引：</p>
+<ol>
 <li>主键列和唯一列，不需要再创建索引，因为MySQL的主键限制和唯一限制都是通过索引来实现的。</li>
 <li>如果创建了索引(A,B),再创建索引(A)就是冗余索引。因为索引(A,B)也可以当作索引(A)来使用。</li>
 </ol>
 </li>
 </ol>
-<h3 id="3-EXPLAN"><a href="#3-EXPLAN" class="headerlink" title="3.EXPLAN"></a>3.EXPLAN</h3><blockquote>
-<p>在MySQL中可以使用EXPLAN查看SQL执行计划，用法：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">EXPLAIN</span> <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">user</span></div></pre></td></tr></table></figure></p>
-</blockquote>
+<h3 id="3-EXPLAN"><a href="#3-EXPLAN" class="headerlink" title="3.EXPLAN"></a>3.EXPLAN</h3><p>在MySQL中可以使用EXPLAN查看SQL执行计划，用法：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">EXPLAIN</span> <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">user</span></div></pre></td></tr></table></figure></p>
 <p>####3.1结果说明</p>
 <ol>
 <li>id<br><br> SELECT识别符。这是SELECT查询序列号。这个不重要。</li>
@@ -536,13 +490,11 @@
 </ul>
 </li>
 </ol>
-<h3 id="4-查询性能优化"><a href="#4-查询性能优化" class="headerlink" title="4.查询性能优化"></a>4.查询性能优化</h3><blockquote>
-<p>查询的生命周期：从客户端，到服务器，在服务器上进行解析，生成执行计划，执行，返回结果给客户端。<br>其中”执行“可以认为是最重要的阶段。这其中包括了大量为了检索数据到存储引擎的调用以及调用后的数据<br>处理，包括排序，分组等。<br><br>查询性能低下的最基本原因是访问的数据太多。大部分性能低下的查询都可以通过减少访问的数据量的方式<br>进行优化。对于低效的查询，我们发现通过下面两个步骤来分析总是很有效：</p>
+<h3 id="4-查询性能优化"><a href="#4-查询性能优化" class="headerlink" title="4.查询性能优化"></a>4.查询性能优化</h3><p>查询的生命周期：从客户端，到服务器，在服务器上进行解析，生成执行计划，执行，返回结果给客户端。<br>其中”执行“可以认为是最重要的阶段。这其中包括了大量为了检索数据到存储引擎的调用以及调用后的数据<br>处理，包括排序，分组等。<br><br>查询性能低下的最基本原因是访问的数据太多。大部分性能低下的查询都可以通过减少访问的数据量的方式<br>进行优化。对于低效的查询，我们发现通过下面两个步骤来分析总是很有效：</p>
 <ol>
 <li>确认应用程序是否在检索大量超过需要的数据。这通常意味着访问了太多的行，但有时候也可能是访问了<br>太多的列。</li>
 <li>确认MySQL服务器层是否在分析大量超过需要的数据行。</li>
 </ol>
-</blockquote>
 <p>简单的衡量查询开销的三个指标如下：</p>
 <ol>
 <li>响应时间</li>
@@ -550,13 +502,11 @@
 <li>返回的行数</li>
 </ol>
 <p>这三个指标都会记录到MySQL的慢日志中，所以检查慢日志记录是找出扫描行数过多的查询的好办法。</p>
-<blockquote>
 <ol>
 <li>响应时间<br><br>响应时间分为服务时间和排队时间。服务时间是指数据库处理这个查询真正花了多长时间。排队时间<br>是指服务器因为等待某些资源而没有真正执行查询的时间——可能是等I/O操作完成，也可能是等待行锁，<br>等待。</li>
 <li>扫描的行数和返回的行数<br><br>分析查询时，查看该查询扫描的行数是非常有帮助的，这在一定程度上能够说明该查询找到需要的数据<br>的效率高不高。理想情况下扫描的行数和返回的行数应该是相同的。但实际情况这种事并不多。</li>
 <li>扫描的行数和访问类型<br><br>在EXPLAIN语句中的type列反应了访问类型，访问类型有很多种，从全表扫描到索引扫描、范围扫描、<br>唯一索查询、常数引用等。这里列的这些，速度是从慢到快。扫描的行数也是从小到大。需要明白扫描<br>表，扫描索引，范围访问和单值访问的概念。</li>
 </ol>
-</blockquote>
 <p>一般MySQL能够使用如下三种方式应用WHERE条件，从好到坏依次为：</p>
 <ol>
 <li>在索引中使用WHERE条件来过滤不匹配的记录，这是在存储引擎层完成的。</li>
@@ -584,27 +534,6 @@
     <div>
       
         
-  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
-    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
-    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
-      <span>赏</span>
-    </button>
-    <div id="QR" style="display: none;">
-      
-        <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="/images/wechatpay.jpg" alt="JollyFly WeChat Pay"/>
-          <p>微信打赏</p>
-        </div>
-      
-      
-        <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="/images/alipay.jpg" alt="JollyFly Alipay"/>
-          <p>支付宝打赏</p>
-        </div>
-      
-    </div>
-  </div>
-
 
       
     </div>
@@ -635,8 +564,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/07/07/first/" rel="next" title="随笔">
-                <i class="fa fa-chevron-left"></i> 随笔
+              <a href="/2017/07/07/first/" rel="next" title="关于。。">
+                <i class="fa fa-chevron-left"></i> 关于。。
               </a>
             
           </div>
@@ -679,7 +608,12 @@
           
   <div class="comments" id="comments">
     
-      <div id="uyan_frame"></div>
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
     
   </div>
 
@@ -719,15 +653,15 @@
                alt="JollyFly" />
           <p class="site-author-name" itemprop="name">JollyFly</p>
            
-              <p class="site-description motion-element" itemprop="description">勿在浮沙筑高台</p>
-          
+              <p class="site-description motion-element" itemprop="description"></p>
+           
         </div>
         <nav class="site-state motion-element">
 
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -738,7 +672,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -749,7 +683,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -959,6 +893,26 @@
 
   
 
+    
+      <script id="dsq-count-scr" src="https://jollyfly-me.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://jollyfly.com/2017/07/07/mysql/';
+          this.page.identifier = '2017/07/07/mysql/';
+          this.page.title = 'mysql学习与总结';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://jollyfly-me.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
 
 
 
@@ -975,14 +929,6 @@
 
 
   
-    
-
-    
-      <!-- UY BEGIN -->
-      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2138289"></script>
-      <!-- UY END -->
-    
-  
 
 
 
@@ -996,132 +942,6 @@
 
 
   
-
-  <script type="text/javascript">
-    // Popup Window;
-    var isfetched = false;
-    // Search DB path;
-    var search_path = "";
-    if (search_path.length == 0) {
-      search_path = "search.xml";
-    }
-    var path = "/" + search_path;
-    // monitor main search box;
-
-    function proceedsearch() {
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
-        .css('overflow', 'hidden');
-      $('.popup').toggle();
-    }
-    // search function;
-    var searchFunc = function(path, search_id, content_id) {
-      'use strict';
-      $.ajax({
-        url: path,
-        dataType: "xml",
-        async: true,
-        success: function( xmlResponse ) {
-          // get the contents from search data
-          isfetched = true;
-          $('.popup').detach().appendTo('.header-inner');
-          var datas = $( "entry", xmlResponse ).map(function() {
-            return {
-              title: $( "title", this ).text(),
-              content: $("content",this).text(),
-              url: $( "url" , this).text()
-            };
-          }).get();
-          var $input = document.getElementById(search_id);
-          var $resultContent = document.getElementById(content_id);
-          $input.addEventListener('input', function(){
-            var matchcounts = 0;
-            var str='<ul class=\"search-result-list\">';
-            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-            $resultContent.innerHTML = "";
-            if (this.value.trim().length > 1) {
-              // perform local searching
-              datas.forEach(function(data) {
-                var isMatch = false;
-                var content_index = [];
-                var data_title = data.title.trim().toLowerCase();
-                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
-                var data_url = decodeURIComponent(data.url);
-                var index_title = -1;
-                var index_content = -1;
-                var first_occur = -1;
-                // only match artiles with not empty titles and contents
-                if(data_title != '') {
-                  keywords.forEach(function(keyword, i) {
-                    index_title = data_title.indexOf(keyword);
-                    index_content = data_content.indexOf(keyword);
-                    if( index_title >= 0 || index_content >= 0 ){
-                      isMatch = true;
-                      if (i == 0) {
-                        first_occur = index_content;
-                      }
-                    }
-
-                  });
-                }
-                // show search results
-                if (isMatch) {
-                  matchcounts += 1;
-                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
-                  var content = data.content.trim().replace(/<[^>]+>/g,"");
-                  if (first_occur >= 0) {
-                    // cut out 100 characters
-                    var start = first_occur - 20;
-                    var end = first_occur + 80;
-                    if(start < 0){
-                      start = 0;
-                    }
-                    if(start == 0){
-                      end = 50;
-                    }
-                    if(end > content.length){
-                      end = content.length;
-                    }
-                    var match_content = content.substring(start, end);
-                    // highlight all keywords
-                    keywords.forEach(function(keyword){
-                      var regS = new RegExp(keyword, "gi");
-                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
-                    });
-
-                    str += "<p class=\"search-result\">" + match_content +"...</p>"
-                  }
-                  str += "</li>";
-                }
-              })};
-            str += "</ul>";
-            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
-            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
-            $resultContent.innerHTML = str;
-          });
-          proceedsearch();
-        }
-      });}
-
-    // handle and trigger popup window;
-    $('.popup-trigger').click(function(e) {
-      e.stopPropagation();
-      if (isfetched == false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-    });
-
-    $('.popup-btn-close').click(function(e){
-      $('.popup').hide();
-      $(".local-search-pop-overlay").remove();
-      $('body').css('overflow', '');
-    });
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-  </script>
 
 
 
