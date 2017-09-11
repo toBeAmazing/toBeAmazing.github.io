@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://jollyfly.com/"/>
-  <updated>2017-09-04T01:29:55.305Z</updated>
+  <updated>2017-09-11T00:53:53.234Z</updated>
   <id>http://jollyfly.com/</id>
   
   <author>
@@ -14,6 +14,111 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LinkedList源码分析</title>
+    <link href="http://jollyfly.com/2017/08/29/linkedlist/"/>
+    <id>http://jollyfly.com/2017/08/29/linkedlist/</id>
+    <published>2017-08-29T11:16:20.000Z</published>
+    <updated>2017-09-11T00:53:53.234Z</updated>
+    
+    <content type="html"><![CDATA[<p>LinkedList是比较常用的数据结构，本次分析的源码基于jdk1.8<br>上来先来个类图镇楼<br><img src="/img/linkedlist.jpg" alt="LinkedList"><br>可以看出LinkedList不仅实现了List接口，同样实现了Queue接口。从类图可以看出，继承自AbstractSequentialList，所以LinkedList是一个<strong>有序列表</strong>，同时也实现了Deque接口，因此LinkedList是一个<strong>双端队列</strong>，所谓的双端队列，即两端的元素既能入队也能出队。由于这个特性，LinkedList也可以被当做堆栈进行操作。</p>
+<h1 id="Node"><a href="#Node" class="headerlink" title="Node"></a>Node</h1><p>先从Node看起，Node是定义在LinkedList中的内部类，源码如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">E</span>&gt; </span>&#123;</div><div class="line">    E item;</div><div class="line">    Node&lt;E&gt; next;</div><div class="line">    Node&lt;E&gt; prev;</div><div class="line"></div><div class="line">    Node(Node&lt;E&gt; prev, E element, Node&lt;E&gt; next) &#123;</div><div class="line">        <span class="keyword">this</span>.item = element;</div><div class="line">        <span class="keyword">this</span>.next = next;</div><div class="line">        <span class="keyword">this</span>.prev = prev;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看出，在Node中记录了当前节点存储的数据，同时也记录了其前一个节点和后一个节点的引用。<br>就像军训排队，每个人只需要记住自己的前一个和后一个是谁，队伍就能排出来</p>
+<h1 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h1><p>在看构造方法前，先看LinkedList的类属性：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">//记录LinkedList的大小</div><div class="line">transient int size = 0;</div><div class="line">//记录第一个节点</div><div class="line">transient Node&lt;E&gt; first;</div><div class="line">//记录最后一个节点</div><div class="line">transient Node&lt;E&gt; last;</div></pre></td></tr></table></figure></p>
+<p>LinkedList无参构造器如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">public LinkedList()&#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>里面没有进行任何初始化的操作。也就是new出来的LinkedList，其中的第一个节点和最后一个节点都是null。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public LinkedList(Collection&lt;? extends E&gt; c) &#123;</div><div class="line">    this();</div><div class="line">    addAll(c);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>第二个构造方法，要求传一个集合，关键点在于线面的addAll方法。<br>下面的addAll方法是只有一个参数的重载，第一个index参数传入的是size，也就是当前LinkedList的大小即0<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">public boolean addAll(int index, Collection&lt;? extends E&gt; c) &#123;</div><div class="line">    //传入的index为0</div><div class="line">    // 如果插入位置超过了链表的长度或小于0，抛出IndexOutOfBoundsException</div><div class="line">    checkPositionIndex(index);</div><div class="line">    Object[] a = c.toArray();</div><div class="line">    int numNew = a.length;</div><div class="line">    //集合转换过来的数组长度为零则返回false，不进行下面的操作。在构造方法中相当于只调用了无参构造器</div><div class="line">    if (numNew == 0)</div><div class="line">        return false;</div><div class="line"></div><div class="line"></div><div class="line">    //定义两个Node类型变量</div><div class="line">    Node&lt;E&gt; pred, succ;</div><div class="line">    </div><div class="line">    if (index == size) &#123;</div><div class="line">        succ = null;</div><div class="line">        pred = last;</div><div class="line">    &#125; else &#123;</div><div class="line">        succ = node(index);</div><div class="line">        pred = succ.prev;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    for (Object o : a) &#123;</div><div class="line">        @SuppressWarnings(&quot;unchecked&quot;) E e = (E) o;</div><div class="line">        Node&lt;E&gt; newNode = new Node&lt;&gt;(pred, e, null);</div><div class="line">        if (pred == null)</div><div class="line">            first = newNode;</div><div class="line">        else</div><div class="line">            pred.next = newNode;</div><div class="line">        pred = newNode;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if (succ == null) &#123;</div><div class="line">        last = pred;</div><div class="line">    &#125; else &#123;</div><div class="line">        pred.next = succ;</div><div class="line">        succ.prev = pred;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    size += numNew;</div><div class="line">    modCount++;</div><div class="line">    return true;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="关键方法解析"><a href="#关键方法解析" class="headerlink" title="关键方法解析"></a>关键方法解析</h1><p>在LinkedList中，比较关键的方法，LinkFirst<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">private void linkFirst(E e) &#123;</div><div class="line">    final Node&lt;E&gt; f = first;</div><div class="line">    final Node&lt;E&gt; newNode = new Node&lt;&gt;(null, e, f);</div><div class="line">    first = newNode;</div><div class="line">    if (f == null)</div><div class="line">        last = newNode;</div><div class="line">    else</div><div class="line">        f.prev = newNode;</div><div class="line">    size++;</div><div class="line">    modCount++;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这里分为两种情况进行讨论</p>
+<ol>
+<li>LinkedList中的元素为空。即 first = null  ， last = null  ， size = 0<br><img src="/img/LinkedList1.jpg" alt="linkeddFirst"><br>此时执行完毕之后，结果如上图所示，新增了一个Node，并且first和last都指向新增的节点。此时如果再执行一次linkFirst，结果如下：<br><img src="/img/LinkedList3.jpg" alt="linkedFirst"></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;LinkedList是比较常用的数据结构，本次分析的源码基于jdk1.8&lt;br&gt;上来先来个类图镇楼&lt;br&gt;&lt;img src=&quot;/img/linkedlist.jpg&quot; alt=&quot;LinkedList&quot;&gt;&lt;br&gt;可以看出LinkedList不仅实现了List接口，同样实现了Q
+    
+    </summary>
+    
+      <category term="数据结构" scheme="http://jollyfly.com/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+    
+      <category term="数据结构" scheme="http://jollyfly.com/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+      <category term="链表" scheme="http://jollyfly.com/tags/%E9%93%BE%E8%A1%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>java代理模式</title>
+    <link href="http://jollyfly.com/2017/08/25/proxy/"/>
+    <id>http://jollyfly.com/2017/08/25/proxy/</id>
+    <published>2017-08-25T01:14:36.000Z</published>
+    <updated>2017-09-07T08:20:10.676Z</updated>
+    
+    <content type="html"><![CDATA[<p>代理模式是java中非常常见的设计模式，又有动态代理和静态代理之分。通过代理对象控制原对象的访问。以下是一个简单的代理模式的类图。图中Subject是接口，RealSubject是真是的角色，而SubjectProxy是代理角色。<br><img src="/img/proxy.jpg" alt="代理模式"><br>代理模式其实比较好理解，例如生活中房东与中介。租客需要租房子，而房东和中介都可以提供出租服务，即这二者实现了同一个接口。中介代理房东的房子来进行出租，而真正的租客所使用的一般是中介的服务。</p>
+<h1 id="静态代理"><a href="#静态代理" class="headerlink" title="静态代理"></a>静态代理</h1><p>直接上代码<br>接口：Rental<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Rental</span></span>&#123;</div><div class="line">    <span class="comment">//出租房子</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">renting</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>房东：Owner<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Owner</span> <span class="keyword">implements</span> <span class="title">Rental</span></span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">renting</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"出租房屋"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>中介： Intermediary<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Intermediary</span> <span class="keyword">implements</span> <span class="title">Rental</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> Owner owner;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Intermediary</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.owner = <span class="keyword">new</span> Owner();</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">renting</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.owner.renting();</div><div class="line">        System.out.println(<span class="string">"收中介费"</span>);</div><div class="line">    &#125;   </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>以上是一个简单的静态代理的例子。代理类实在编译时就已经实现好的，在使用时，需要对每个真实的角色去实现代理，大量使用不是特别方便，灵活性也比较差。</p>
+<h1 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h1><h2 id="JDK动态代理"><a href="#JDK动态代理" class="headerlink" title="JDK动态代理"></a>JDK动态代理</h2><p>JDK动态代理主要涉及一下两个类</p>
+<ol>
+<li>InvocationHandler<br>该接口中定义一个方法：<br> <code>Object invoke(Object proxy,Method method,Object... args) throws Throwable</code><br>第一个参数指的是代理类，method指被代理的方法，args指该方法的参数数组</li>
+<li>Proxy 改类即为动态代理类</li>
+</ol>
+<p>直接上代码<br>Subject:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Subject</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">request</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>RealSubject:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RealSubject</span> <span class="keyword">implements</span> <span class="title">Subject</span></span>&#123;</div><div class="line">    <span class="meta">@Override</span>  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">()</span> </span>&#123;  </div><div class="line">        System.out.println(<span class="string">"执行。。"</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>SubjectProxy:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubjectHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> Object delegate;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SubjectHandler</span><span class="params">(Object subject)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.delegate = subject;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object... args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">        before();</div><div class="line">        Object obj = method.invoke(delegate, args);</div><div class="line">        after();</div><div class="line">        <span class="keyword">return</span> obj;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"执行前"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">after</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"执行后"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>测试：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyTest</span></span>&#123;</div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">       RealSubject subject = <span class="keyword">new</span> RealSubject();</div><div class="line">       Subject proxy = (Subject) Proxy.newProxyInstance(RealSubject.class.getClassLoader()</div><div class="line">               ,<span class="keyword">new</span> Class[]&#123;Subject.class&#125;,<span class="keyword">new</span> SubjectHandler(subject));</div><div class="line"></div><div class="line">       proxy.request();</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>使用JDK的动态代理必须要定义接口。如果在实现类中新增了接口中没有定义的方法，这个方法是无法被代理的。<br>JDK动态代理所用到的代理类在程序调用到代理类对象时才由JVM真正创建，JVM根据传进来的业务实现类对象以及方法名动态地创建了一个代理类的class文件并被字节码引擎执行，然后通过该代理类对象进行方法调用。</p>
+<h2 id="CGlib动态代理"><a href="#CGlib动态代理" class="headerlink" title="CGlib动态代理"></a>CGlib动态代理</h2><p>cglib动态代理的思路和jdk的有所区别。cglib通过继承实现类，从而对实现类的方法进行代理。这样被final修饰的类就无法被代理。<br>先看代码</p>
+<p>Subject<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Subject</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"执行中"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">``` </div><div class="line">实现MethodInterceptor方法大力接口，创建代理类</div><div class="line">```java</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubjectProxy</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> Object target;</div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">getTarget</span><span class="params">(Object target)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.target = target;</div><div class="line">        Enhancer enhancer = <span class="keyword">new</span> Enhancer();</div><div class="line">        enhancer.setSuperclass(<span class="keyword">this</span>.target.getClass());</div><div class="line">        enhancer.setCallback(<span class="keyword">this</span>);</div><div class="line">        <span class="keyword">return</span> enhancer.create();</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj , Method method , Object... args , MethodProxy proxy)</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"执行前"</span>);</div><div class="line">        proxy.invokeSuper(obj,args);</div><div class="line">        System.out.println(<span class="string">"执行后"</span>);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;代理模式是java中非常常见的设计模式，又有动态代理和静态代理之分。通过代理对象控制原对象的访问。以下是一个简单的代理模式的类图。图中Subject是接口，RealSubject是真是的角色，而SubjectProxy是代理角色。&lt;br&gt;&lt;img src=&quot;/img/pro
+    
+    </summary>
+    
+      <category term="设计模式" scheme="http://jollyfly.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+      <category term="proxy" scheme="http://jollyfly.com/tags/proxy/"/>
+    
+      <category term="动态代理" scheme="http://jollyfly.com/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux Iptables</title>
+    <link href="http://jollyfly.com/2017/08/20/iptable/"/>
+    <id>http://jollyfly.com/2017/08/20/iptable/</id>
+    <published>2017-08-20T05:23:48.000Z</published>
+    <updated>2017-09-05T08:46:41.476Z</updated>
+    
+    <content type="html"><![CDATA[<p>Iptables也称作netfilter，是linux系统自带的防火墙工具，功能强大，使用灵活。在此记录下常用的命令及配置，以方便以后的使用。</p>
+<h1 id="Iptables服务相关命令"><a href="#Iptables服务相关命令" class="headerlink" title="Iptables服务相关命令"></a>Iptables服务相关命令</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#1.查看iptables状态</span></div><div class="line">service iptables status</div><div class="line"><span class="comment">#2. 开启/关闭 iptables</span></div><div class="line">service iptables start</div><div class="line">service iptables stop</div><div class="line"><span class="comment">#3. 查看iptables是否开机自启</span></div><div class="line">chkconfig iptables --list</div><div class="line"><span class="comment">#4. 设置iptables开机启动/不启动</span></div><div class="line">chkconfig iptables on</div><div class="line">chkconfig iptables off</div></pre></td></tr></table></figure>
+<h1 id="Iptables相关命令"><a href="#Iptables相关命令" class="headerlink" title="Iptables相关命令"></a>Iptables相关命令</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#查看帮助</span></div><div class="line">iptables -h</div><div class="line">man iptables</div><div class="line"></div><div class="line"><span class="comment">#列出iptables规则</span></div><div class="line">iptables -L -n</div><div class="line"></div><div class="line"><span class="comment">#列出iptables规则并显示规则编号</span></div><div class="line">iptables -L -n --line-numbers</div><div class="line"></div><div class="line"><span class="comment">#列出iptables nat表规则（默认是filter表）</span></div><div class="line">iptables -L -n -t nat</div><div class="line"></div><div class="line"><span class="comment">#清除默认规则（注意默认是filter表，如果对nat表操作要加-t nat）</span></div><div class="line"><span class="comment">#清楚所有规则</span></div><div class="line">iptables -F </div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#重启iptables发现规则依然存在，因为没有保存</span></div><div class="line">service iptables restart</div><div class="line"></div><div class="line"><span class="comment">#保存配置</span></div><div class="line">service iptables save</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#禁止ssh登陆（若果服务器在机房，一定要小心）</span></div><div class="line">iptables -A INPUT -p tcp --dport 22 -j DROP</div><div class="line"></div><div class="line"><span class="comment">#删除规则</span></div><div class="line">iptables -D INPUT -p tcp --dport 22 -j DROP</div><div class="line">:&lt;&lt;!</div><div class="line">-A, --append chain	追加到规则的最后一条</div><div class="line">-D, --delete chain [rulenum]	Delete rule rulenum (1 = first) from chain</div><div class="line">-I, --insert chain [rulenum]	Insert <span class="keyword">in</span> chain as rulenum (default 1=first) 添加到规则的第一条</div><div class="line">-p, --proto  proto	protocol: by number or name, eg. <span class="string">'tcp'</span>,常用协议有tcp、udp、icmp、all</div><div class="line">-j, --jump target 常见的行为有ACCEPT、DROP和REJECT三种，但一般不用REJECT，会带来安全隐患</div><div class="line">注意：INPUT和DROP这样的关键字需要大写</div><div class="line">!</div><div class="line"></div><div class="line"><span class="comment">#禁止192.168.33.0网段从eth0网卡接入</span></div><div class="line">iptables -A INPUT -p tcp -i eth0 -s 192.168.33.0 -j DROP</div><div class="line">iptables -A INPUT -p tcp --dport 22 -i eth0 -s 192.168.33.61  -j ACCEPT</div><div class="line"></div><div class="line"><span class="comment">#禁止ip地址非192.168.10.10的所有类型数据接入</span></div><div class="line">iptables -A INPUT ! -s 192.168.10.10 -j DROP</div><div class="line"></div><div class="line"><span class="comment">#禁止ip地址非192.168.10.10的ping请求</span></div><div class="line">iptables -I INPUT -p icmp --icmp-type 8 -s 192.168.50.100 -j DROP</div><div class="line"></div><div class="line"><span class="comment">#匹配端口范围</span></div><div class="line">iptables -I INPUT -p tcp --dport 22:80 -j DROP</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#匹配多个端口</span></div><div class="line">iptables -I INPUT -p tcp -m multiport --dport 22,80,3306 -j ACCEPT</div><div class="line"></div><div class="line"><span class="comment">#不允许源端口为80的数据流出</span></div><div class="line">iptables -I OUTPUT -p tcp --sport 80 -j DROP</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Iptables也称作netfilter，是linux系统自带的防火墙工具，功能强大，使用灵活。在此记录下常用的命令及配置，以方便以后的使用。&lt;/p&gt;
+&lt;h1 id=&quot;Iptables服务相关命令&quot;&gt;&lt;a href=&quot;#Iptables服务相关命令&quot; class=&quot;head
+    
+    </summary>
+    
+      <category term="linux" scheme="http://jollyfly.com/categories/linux/"/>
+    
+    
+      <category term="linux" scheme="http://jollyfly.com/tags/linux/"/>
+    
+      <category term="防火墙" scheme="http://jollyfly.com/tags/%E9%98%B2%E7%81%AB%E5%A2%99/"/>
+    
+  </entry>
   
   <entry>
     <title>Spring事件驱动模型</title>
@@ -197,28 +302,6 @@
   </entry>
   
   <entry>
-    <title>redis实现分布式锁</title>
-    <link href="http://jollyfly.com/2017/07/15/redislock/"/>
-    <id>http://jollyfly.com/2017/07/15/redislock/</id>
-    <published>2017-07-15T01:00:48.000Z</published>
-    <updated>2017-07-31T00:59:45.467Z</updated>
-    
-    <summary type="html">
-    
-    </summary>
-    
-      <category term="redis" scheme="http://jollyfly.com/categories/redis/"/>
-    
-    
-      <category term="分布式" scheme="http://jollyfly.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
-    
-      <category term="redis" scheme="http://jollyfly.com/tags/redis/"/>
-    
-      <category term="锁" scheme="http://jollyfly.com/tags/%E9%94%81/"/>
-    
-  </entry>
-  
-  <entry>
     <title>使用AOP实现数据库读写分离</title>
     <link href="http://jollyfly.com/2017/07/15/rwseparate/"/>
     <id>http://jollyfly.com/2017/07/15/rwseparate/</id>
@@ -327,10 +410,10 @@
     <link href="http://jollyfly.com/2017/07/11/javalock/"/>
     <id>http://jollyfly.com/2017/07/11/javalock/</id>
     <published>2017-07-11T07:42:34.000Z</published>
-    <updated>2017-08-10T07:32:07.910Z</updated>
+    <updated>2017-09-11T01:49:51.971Z</updated>
     
     <content type="html"><![CDATA[<p> 在java中lock和synchronized都可以实现对程序的同步控制，但是在不同的场景有不同的性能表现。</p>
-<h2 id="Lock和synchronized的区别"><a href="#Lock和synchronized的区别" class="headerlink" title="Lock和synchronized的区别"></a>Lock和synchronized的区别</h2><h3 id="Lock接口"><a href="#Lock接口" class="headerlink" title="Lock接口"></a>Lock接口</h3><p>Lock是jdk中java.util.concurrent.locks包中的一个接口，常用的实现类为ReentrantLock。<br>在Lock接口中主要提供了以下方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//如果获取了锁立即返回，如果别的线程持有锁，当前线程则一直处于休眠状态，直到获取锁。</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span></span>;</div><div class="line"><span class="comment">//如果获取了锁定立即返回，如果没有获取锁定，当前线程处于休眠状态，直到或者锁定，或者当前线程被别的线程中断</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">lockInterruptibly</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException</span>;</div><div class="line"><span class="comment">//如果获取了锁立即返回true，如果别的线程正持有锁，立即回false</span></div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">()</span></span>;</div><div class="line"><span class="comment">/*如果获取了锁定立即返回true，如果别的线程正持有锁，会等待</span></div><div class="line">*参数给定的时间，在等待的过程中，如果获取了锁定，就返回true，</div><div class="line">*如果等待超时，返回false</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">(<span class="keyword">long</span> time, TimeUnit unit)</span> <span class="keyword">throws</span> InterruptedException</span>;</div><div class="line"><span class="comment">//释放锁</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span></span>;</div></pre></td></tr></table></figure></p>
+<h2 id="Lock和synchronized的区别"><a href="#Lock和synchronized的区别" class="headerlink" title="Lock和synchronized的区别"></a>Lock和synchronized的区别</h2><h3 id="Lock接口"><a href="#Lock接口" class="headerlink" title="Lock接口"></a>Lock接口</h3><p>Lock是jdk中java.util.concurrent.locks包中的一个接口，常用的实现类为ReentrantLock。<br>在Lock接口中主要提供了以下方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">//如果获取了锁立即返回，如果别的线程持有锁，当前线程则一直处于休眠状态，直到获取锁。</div><div class="line">void lock();</div><div class="line">//如果获取了锁定立即返回，如果没有获取锁定，当前线程处于休眠状态，直到或者锁定，或者当前线程被别的线程中断</div><div class="line">void lockInterruptibly() throws InterruptedException;</div><div class="line">//如果获取了锁立即返回true，如果别的线程正持有锁，立即回false</div><div class="line">boolean tryLock();</div><div class="line">/*如果获取了锁定立即返回true，如果别的线程正持有锁，会等待</div><div class="line">*参数给定的时间，在等待的过程中，如果获取了锁定，就返回true，</div><div class="line">*如果等待超时，返回false</div><div class="line">*/</div><div class="line">boolean tryLock(long time, TimeUnit unit) throws InterruptedException;</div><div class="line">//释放锁</div><div class="line">void unlock();</div></pre></td></tr></table></figure></p>
 <p>可以看出，synchronized是系统提供的关键字，而Lock是jdk给的接口，因此synchronized是在JVM的层<br>面上实现的，在代码执行出现异常的时候，JVM会自动释放锁，而Lock是使用代码来实现锁的功能，因此需要在<br>finally中对锁进行释放。</p>
 ]]></content>
     
@@ -749,17 +832,16 @@
     <link href="http://jollyfly.com/2017/07/07/first/"/>
     <id>http://jollyfly.com/2017/07/07/first/</id>
     <published>2017-07-07T06:23:48.000Z</published>
-    <updated>2017-08-10T07:15:50.872Z</updated>
+    <updated>2017-09-11T01:53:51.741Z</updated>
     
     <content type="html"><![CDATA[<h1 id="搭建博客的心路历程"><a href="#搭建博客的心路历程" class="headerlink" title="搭建博客的心路历程"></a>搭建博客的心路历程</h1><p>一直想搭建一个属于自己的博客。最开始的想法是自己写一套出来，然后弄个云服务器部署起来，自己一个人想怎么嗨就怎么嗨。但实际情况是，周期太长。后来还是决定用hexo搭建一个博客出来，这下好了，云服务器的钱也省了。哈哈。<br>然后抽了一天时间，给弄了出来，捣鼓主题、评论什么的，整个过程还是很有意思的。</p>
 <h1 id="为什么想要自己搭个人博客"><a href="#为什么想要自己搭个人博客" class="headerlink" title="为什么想要自己搭个人博客"></a>为什么想要自己搭个人博客</h1><p>博客主要是记录下自己的学习过程以及一些总结，偶尔还可以写写别的东西。个人是比较喜欢旅游的，有空也可以记录记录自己走过的地方，是一种不错的回忆。自己想想可能有以下几个原因驱动我吧：</p>
 <ol>
 <li><strong>简洁、自由</strong>。因此在看到themes主题时，就爱上了这个主题</li>
 <li><strong>可玩性强</strong>。由于hexo主题特别多，心情好时换换主题，也是种不错的体验</li>
-<li><strong>炫酷</strong>。我可以有自己的专属顶级域名，哈哈</li>
+<li><strong>炫酷</strong>。我可以设置自己的专属顶级域名，哈哈</li>
 </ol>
-<h1 id="尾巴"><a href="#尾巴" class="headerlink" title="尾巴"></a>尾巴</h1><p>小时候觉得很酷的哪些事，比如去酒吧、文身、烫头发，长大后才发现，这些事情其实实现起来很容易，没有什么酷不酷的。真正酷的事其实是坚持自己的梦想。</p>
-]]></content>
+<h1 id="尾巴"><a href="#尾巴" class="headerlink" title="尾巴"></a>尾巴</h1>]]></content>
     
     <summary type="html">
     

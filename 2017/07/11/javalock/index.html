@@ -96,7 +96,7 @@
 <meta property="og:url" content="http://jollyfly.com/2017/07/11/javalock/index.html">
 <meta property="og:site_name" content="JollyFly&#39;s Blog">
 <meta property="og:description" content="在java中lock和synchronized都可以实现对程序的同步控制，但是在不同的场景有不同的性能表现。 Lock和synchronized的区别Lock接口Lock是jdk中java.util.concurrent.locks包中的一个接口，常用的实现类为ReentrantLock。在Lock接口中主要提供了以下方法：12345678910111213//如果获取了锁立即返回，如果别的线程">
-<meta property="og:updated_time" content="2017-08-10T07:32:07.910Z">
+<meta property="og:updated_time" content="2017-09-11T01:49:51.971Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Lock和synchronized">
 <meta name="twitter:description" content="在java中lock和synchronized都可以实现对程序的同步控制，但是在不同的场景有不同的性能表现。 Lock和synchronized的区别Lock接口Lock是jdk中java.util.concurrent.locks包中的一个接口，常用的实现类为ReentrantLock。在Lock接口中主要提供了以下方法：12345678910111213//如果获取了锁立即返回，如果别的线程">
@@ -393,7 +393,7 @@
 
       
         <p> 在java中lock和synchronized都可以实现对程序的同步控制，但是在不同的场景有不同的性能表现。</p>
-<h2 id="Lock和synchronized的区别"><a href="#Lock和synchronized的区别" class="headerlink" title="Lock和synchronized的区别"></a>Lock和synchronized的区别</h2><h3 id="Lock接口"><a href="#Lock接口" class="headerlink" title="Lock接口"></a>Lock接口</h3><p>Lock是jdk中java.util.concurrent.locks包中的一个接口，常用的实现类为ReentrantLock。<br>在Lock接口中主要提供了以下方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//如果获取了锁立即返回，如果别的线程持有锁，当前线程则一直处于休眠状态，直到获取锁。</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span></span>;</div><div class="line"><span class="comment">//如果获取了锁定立即返回，如果没有获取锁定，当前线程处于休眠状态，直到或者锁定，或者当前线程被别的线程中断</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">lockInterruptibly</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException</span>;</div><div class="line"><span class="comment">//如果获取了锁立即返回true，如果别的线程正持有锁，立即回false</span></div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">()</span></span>;</div><div class="line"><span class="comment">/*如果获取了锁定立即返回true，如果别的线程正持有锁，会等待</span></div><div class="line">*参数给定的时间，在等待的过程中，如果获取了锁定，就返回true，</div><div class="line">*如果等待超时，返回false</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">(<span class="keyword">long</span> time, TimeUnit unit)</span> <span class="keyword">throws</span> InterruptedException</span>;</div><div class="line"><span class="comment">//释放锁</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span></span>;</div></pre></td></tr></table></figure></p>
+<h2 id="Lock和synchronized的区别"><a href="#Lock和synchronized的区别" class="headerlink" title="Lock和synchronized的区别"></a>Lock和synchronized的区别</h2><h3 id="Lock接口"><a href="#Lock接口" class="headerlink" title="Lock接口"></a>Lock接口</h3><p>Lock是jdk中java.util.concurrent.locks包中的一个接口，常用的实现类为ReentrantLock。<br>在Lock接口中主要提供了以下方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">//如果获取了锁立即返回，如果别的线程持有锁，当前线程则一直处于休眠状态，直到获取锁。</div><div class="line">void lock();</div><div class="line">//如果获取了锁定立即返回，如果没有获取锁定，当前线程处于休眠状态，直到或者锁定，或者当前线程被别的线程中断</div><div class="line">void lockInterruptibly() throws InterruptedException;</div><div class="line">//如果获取了锁立即返回true，如果别的线程正持有锁，立即回false</div><div class="line">boolean tryLock();</div><div class="line">/*如果获取了锁定立即返回true，如果别的线程正持有锁，会等待</div><div class="line">*参数给定的时间，在等待的过程中，如果获取了锁定，就返回true，</div><div class="line">*如果等待超时，返回false</div><div class="line">*/</div><div class="line">boolean tryLock(long time, TimeUnit unit) throws InterruptedException;</div><div class="line">//释放锁</div><div class="line">void unlock();</div></pre></td></tr></table></figure></p>
 <p>可以看出，synchronized是系统提供的关键字，而Lock是jdk给的接口，因此synchronized是在JVM的层<br>面上实现的，在代码执行出现异常的时候，JVM会自动释放锁，而Lock是使用代码来实现锁的功能，因此需要在<br>finally中对锁进行释放。</p>
 
       
@@ -534,7 +534,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">15</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -545,7 +545,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -556,7 +556,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
