@@ -1,0 +1,888 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="spring,spring session," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="JollyFly's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Session与Cookie是web开发中非常重要的两个概念。在研究Spring session前，有必要再复习一下session和cookie的基础知识。 Session与Cookie要说Session与Cookie就要从Http协议说起了。Http协议是一个无状态的协议，一次请求对应一次响应。对于不同的客户端的多次对服务器的请求，需要引入一个机制来判断这些请求是否是同一个用户所为，于是就有了S">
+<meta name="keywords" content="spring,spring session">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring session入门（一）">
+<meta property="og:url" content="http://jollyfly.com/2017/09/16/Spring-Session/index.html">
+<meta property="og:site_name" content="JollyFly&#39;s Blog">
+<meta property="og:description" content="Session与Cookie是web开发中非常重要的两个概念。在研究Spring session前，有必要再复习一下session和cookie的基础知识。 Session与Cookie要说Session与Cookie就要从Http协议说起了。Http协议是一个无状态的协议，一次请求对应一次响应。对于不同的客户端的多次对服务器的请求，需要引入一个机制来判断这些请求是否是同一个用户所为，于是就有了S">
+<meta property="og:image" content="http://jollyfly.com/img/springsession.jpg">
+<meta property="og:updated_time" content="2017-09-16T03:33:46.280Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring session入门（一）">
+<meta name="twitter:description" content="Session与Cookie是web开发中非常重要的两个概念。在研究Spring session前，有必要再复习一下session和cookie的基础知识。 Session与Cookie要说Session与Cookie就要从Http协议说起了。Http协议是一个无状态的协议，一次请求对应一次响应。对于不同的客户端的多次对服务器的请求，需要引入一个机制来判断这些请求是否是同一个用户所为，于是就有了S">
+<meta name="twitter:image" content="http://jollyfly.com/img/springsession.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://jollyfly.com/2017/09/16/Spring-Session/"/>
+
+
+
+
+
+  <title> Spring session入门（一） | JollyFly's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d12795e361ca30eb0b59d4670b65a767";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JollyFly's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">勿在浮沙筑高台</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://jollyfly.com/2017/09/16/Spring-Session/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JollyFly">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JollyFly's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                Spring session入门（一）
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-16T09:38:51+08:00">
+                2017-09-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring-session/" itemprop="url" rel="index">
+                    <span itemprop="name">spring session</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/16/Spring-Session/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/09/16/Spring-Session/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o">本文总阅读量</i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Session与Cookie是web开发中非常重要的两个概念。在研究Spring session前，有必要再复习一下session和cookie的基础知识。</p>
+<h1 id="Session与Cookie"><a href="#Session与Cookie" class="headerlink" title="Session与Cookie"></a>Session与Cookie</h1><p>要说Session与Cookie就要从Http协议说起了。Http协议是一个无状态的协议，一次请求对应一次响应。对于不同的客户端的多次对服务器的请求，需要引入一个机制来判断这些请求是否是同一个用户所为，于是就有了Session和Cookie的机制。在单体式应用中，Session存在于servlet容器的内存中，由容器进行管理。而Cookie则是存在于客户端中，服务器在处理完请求后返回的Response可以携带Cookie并保存在客户端中。</p>
+<h2 id="sessionId"><a href="#sessionId" class="headerlink" title="sessionId"></a>sessionId</h2><p>sessionId是存放在客户端的一个Cookie，真正建立起了客户端与服务端的桥梁。用户发起请求，当服务端往Session中保存一些数据时，Response中自动添加一个Cookie：JSESSIONID，在后面的请求中会自动携带这个Cookie，服务端根据Cookie中的JSESSIONID找到对应的Session，以取得用户之前访问所存储的数据。</p>
+<h1 id="Spring-Session"><a href="#Spring-Session" class="headerlink" title="Spring Session"></a>Spring Session</h1><p>Cookie和Session的机制并不能很好的支持分布式的应用，在分布式应用中通常需要Session共享，Servlet容器一般可以通过配置Session共享来解决这个问题。但是使用Session和Cookie也会带来一定的安全问题。基于上面的介绍，如果JSESSIONID被修改通常会导致会话时效的问题，甚至于将JSESSIONID修改为别人的更会导致信息的泄露与盗取。<br>Spring Session的官网介绍如下：</p>
+<blockquote>
+<p>Spring Session provides an API and implementations for managing a user’s session information. It also provides transparent integration with:</p>
+<ul>
+<li><p>HttpSession - allows replacing the HttpSession in an application container (i.e. Tomcat) neutral way. Additional features include:</p>
+<ul>
+<li><p>Clustered Sessions - Spring Session makes it trivial to support clustered sessions without being         tied to an application container specific solution.</p>
+</li>
+<li><p>Multiple Browser Sessions - Spring Session supports managing multiple users’ sessions in a single browser instance (i.e. multiple authenticated accounts similar to Google).</p>
+</li>
+<li><p>RESTful APIs - Spring Session allows providing session ids in headers to work with RESTful APIs</p>
+</li>
+</ul>
+</li>
+<li><p>WebSocket - provides the ability to keep the HttpSession alive when receiving WebSocket messages</p>
+</li>
+</ul>
+</blockquote>
+<p>大概意思是：<br>Spring Session提供了一个用于管理用户会话信息的API和实现。还包括以下额外功能：</p>
+<ol>
+<li>HttpSession 运行在应用程序容器，例如Tomcat中替代HttpSession，包括<ul>
+<li>集群会话</li>
+<li>多个浏览器会话</li>
+<li>RestfulAPI</li>
+</ul>
+</li>
+<li>WebSocket 技工HttpSession在接受WebSocket消息时保持活动的能力。</li>
+</ol>
+<p>Spring Session可以通过第三方的仓库来实现集群Session管理，也就是分布式Session。对此，Spirng提供了三个实现：redis、mongodb、jdbc。其中redis是最常用的一个。</p>
+<p>扯了这么多下面开始进入正题，集成Spring Session</p>
+<h1 id="Redis集成Spring-Session"><a href="#Redis集成Spring-Session" class="headerlink" title="Redis集成Spring Session"></a>Redis集成Spring Session</h1><p>本次集成使用Spring Boot，版本为最新的1.5.4，JDK1.8<br>首先在pom文件中引入依赖。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.session<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-session<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.session<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-session-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>在配置类中开启Redis HttpSession：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@EnableRedisHttpSession</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringSessionConfig</span> </span>&#123;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>默认的redis配置为 host：localhost   port： 6379 如果没有变化，就不需要配置redis<br>下面编写Controller来测试Spring Session<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SSController</span> </span>&#123;</div><div class="line">    <span class="meta">@GetMapping</span>(<span class="string">"/ss/cookie"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">cookie</span><span class="params">(HttpSession session, HttpServletRequest request)</span></span>&#123;</div><div class="line">        <span class="keyword">if</span> (session.getAttribute(<span class="string">"test"</span>) == <span class="keyword">null</span>)&#123;</div><div class="line">            System.out.println(<span class="string">"不存在session"</span>);</div><div class="line">            session.setAttribute(<span class="string">"test"</span>,<span class="string">"test"</span>);</div><div class="line">        &#125;</div><div class="line">        Cookie[] cookies = request.getCookies();</div><div class="line">        <span class="keyword">if</span> (cookies != <span class="keyword">null</span> &amp;&amp; cookies.length &gt; <span class="number">0</span>)&#123;</div><div class="line">            <span class="comment">//如果有cookie，则打印</span></div><div class="line">            Arrays.asList(cookies).forEach(cookie -&gt; System.out.println(cookie.getName()+<span class="string">":"</span>+cookie.getValue()));</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="string">"index"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>启动应用后，在浏览器中访问<a href="http://localhost:8080/ss/cookie" target="_blank" rel="external">http://localhost:8080/ss/cookie</a><br>访问多次结果如下</p>
+<ul>
+<li>第一次：不存在session</li>
+<li>第二次：SESSION：9dcf19ee-3b8a-4bbc-bb46-0d6354b1c1bf</li>
+<li>第三次：SESSION: 9dcf19ee-3b8a-4bbc-bb46-0d6354b1c1bf</li>
+</ul>
+<p>原生的Session使用的是JSESSIONID，而使用SpringSession后key值变为了SESSION<br>查询redis：<br><img src="/img/springsession.jpg" alt="查询redis"><br>在redis也记录了当前的session信息。</p>
+<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><p>本文对Spring Session做了一个最基本的介绍以及集成，关于Spring Session的更多特性将在后面进行介绍。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/spring/" rel="tag"># spring</a>
+          
+            <a href="/tags/spring-session/" rel="tag"># spring session</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/29/linkedlist/" rel="next" title="LinkedList源码分析">
+                <i class="fa fa-chevron-left"></i> LinkedList源码分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="JollyFly" />
+          <p class="site-author-name" itemprop="name">JollyFly</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/toBeAmazing" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Session与Cookie"><span class="nav-number">1.</span> <span class="nav-text">Session与Cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sessionId"><span class="nav-number">1.1.</span> <span class="nav-text">sessionId</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring-Session"><span class="nav-number">2.</span> <span class="nav-text">Spring Session</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Redis集成Spring-Session"><span class="nav-number">3.</span> <span class="nav-text">Redis集成Spring Session</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结："><span class="nav-number">4.</span> <span class="nav-text">总结：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">JollyFly</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user">本站访客数</i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye">本站总访问量</i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://jollyfly-me.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://jollyfly.com/2017/09/16/Spring-Session/';
+          this.page.identifier = '2017/09/16/Spring-Session/';
+          this.page.title = 'Spring session入门（一）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://jollyfly-me.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+</body>
+</html>

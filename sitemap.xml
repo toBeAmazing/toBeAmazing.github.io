@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://jollyfly.com/2017/09/16/Spring-Session/</loc>
+    
+    <lastmod>2017-09-16T03:33:46.280Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://jollyfly.com/2017/08/29/linkedlist/</loc>
+    
+    <lastmod>2017-09-12T01:32:43.957Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://jollyfly.com/2017/07/07/first/</loc>
     
     <lastmod>2017-09-11T01:53:51.741Z</lastmod>
@@ -12,13 +26,6 @@
     <loc>http://jollyfly.com/2017/07/11/javalock/</loc>
     
     <lastmod>2017-09-11T01:49:51.971Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://jollyfly.com/2017/08/29/linkedlist/</loc>
-    
-    <lastmod>2017-09-11T00:53:53.234Z</lastmod>
     
   </url>
   

@@ -99,7 +99,7 @@
 <meta property="og:image" content="http://jollyfly.com/img/linkedlist.jpg">
 <meta property="og:image" content="http://jollyfly.com/img/LinkedList1.jpg">
 <meta property="og:image" content="http://jollyfly.com/img/LinkedList3.jpg">
-<meta property="og:updated_time" content="2017-09-11T00:53:53.234Z">
+<meta property="og:updated_time" content="2017-09-12T01:32:43.957Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LinkedList源码分析">
 <meta name="twitter:description" content="LinkedList是比较常用的数据结构，本次分析的源码基于jdk1.8上来先来个类图镇楼可以看出LinkedList不仅实现了List接口，同样实现了Queue接口。从类图可以看出，继承自AbstractSequentialList，所以LinkedList是一个有序列表，同时也实现了Deque接口，因此LinkedList是一个双端队列，所谓的双端队列，即两端的元素既能入队也能出队。由于这个特">
@@ -404,10 +404,9 @@
 <p>里面没有进行任何初始化的操作。也就是new出来的LinkedList，其中的第一个节点和最后一个节点都是null。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public LinkedList(Collection&lt;? extends E&gt; c) &#123;</div><div class="line">    this();</div><div class="line">    addAll(c);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>第二个构造方法，要求传一个集合，关键点在于线面的addAll方法。<br>下面的addAll方法是只有一个参数的重载，第一个index参数传入的是size，也就是当前LinkedList的大小即0<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">public boolean addAll(int index, Collection&lt;? extends E&gt; c) &#123;</div><div class="line">    //传入的index为0</div><div class="line">    // 如果插入位置超过了链表的长度或小于0，抛出IndexOutOfBoundsException</div><div class="line">    checkPositionIndex(index);</div><div class="line">    Object[] a = c.toArray();</div><div class="line">    int numNew = a.length;</div><div class="line">    //集合转换过来的数组长度为零则返回false，不进行下面的操作。在构造方法中相当于只调用了无参构造器</div><div class="line">    if (numNew == 0)</div><div class="line">        return false;</div><div class="line"></div><div class="line"></div><div class="line">    //定义两个Node类型变量</div><div class="line">    Node&lt;E&gt; pred, succ;</div><div class="line">    </div><div class="line">    if (index == size) &#123;</div><div class="line">        succ = null;</div><div class="line">        pred = last;</div><div class="line">    &#125; else &#123;</div><div class="line">        succ = node(index);</div><div class="line">        pred = succ.prev;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    for (Object o : a) &#123;</div><div class="line">        @SuppressWarnings(&quot;unchecked&quot;) E e = (E) o;</div><div class="line">        Node&lt;E&gt; newNode = new Node&lt;&gt;(pred, e, null);</div><div class="line">        if (pred == null)</div><div class="line">            first = newNode;</div><div class="line">        else</div><div class="line">            pred.next = newNode;</div><div class="line">        pred = newNode;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if (succ == null) &#123;</div><div class="line">        last = pred;</div><div class="line">    &#125; else &#123;</div><div class="line">        pred.next = succ;</div><div class="line">        succ.prev = pred;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    size += numNew;</div><div class="line">    modCount++;</div><div class="line">    return true;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <h1 id="关键方法解析"><a href="#关键方法解析" class="headerlink" title="关键方法解析"></a>关键方法解析</h1><p>在LinkedList中，比较关键的方法，LinkFirst<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">private void linkFirst(E e) &#123;</div><div class="line">    final Node&lt;E&gt; f = first;</div><div class="line">    final Node&lt;E&gt; newNode = new Node&lt;&gt;(null, e, f);</div><div class="line">    first = newNode;</div><div class="line">    if (f == null)</div><div class="line">        last = newNode;</div><div class="line">    else</div><div class="line">        f.prev = newNode;</div><div class="line">    size++;</div><div class="line">    modCount++;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这里分为两种情况进行讨论</p>
-<ol>
-<li>LinkedList中的元素为空。即 first = null  ， last = null  ， size = 0<br><img src="/img/LinkedList1.jpg" alt="linkeddFirst"><br>此时执行完毕之后，结果如上图所示，新增了一个Node，并且first和last都指向新增的节点。此时如果再执行一次linkFirst，结果如下：<br><img src="/img/LinkedList3.jpg" alt="linkedFirst"></li>
-</ol>
+<p>当LinkedList中的元素为空。即 first = null  ， last = null  ， size = 0<br><img src="/img/LinkedList1.jpg" alt="linkFirst"><br>此时执行完毕之后，结果如上图所示，新增了一个Node，并且first和last都指向新增的节点。此时如果再执行一次linkFirst，结果如下：<br><img src="/img/LinkedList3.jpg" alt="linkFirst"></p>
+<p>另外一个类似的方法是linkLast，方法逻辑一样。</p>
+<p># </p>
 
       
     </div>
@@ -461,6 +460,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/16/Spring-Session/" rel="prev" title="Spring session入门（一）">
+                Spring session入门（一） <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -545,7 +548,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -556,7 +559,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -567,7 +570,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
